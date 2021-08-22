@@ -152,6 +152,34 @@ func TestFindAll_subqueryAny(t *testing.T) {
 	repo.AssertExpectations(t)
 }
 
+func TestFindAll_sql(t *testing.T) {
+	var (
+		repo   = New()
+		result []Book
+		books  = []Book{}
+	)
+
+	repo.ExpectFindAll(rel.SQL("select * from books where id=?", Any)).Result(books)
+	repo.ExpectFindAll(rel.SQL("select * from books where category_id=?", 5)).Result(books)
+
+	assert.Nil(t, repo.FindAll(context.TODO(), &result, rel.SQL("select * from books where id=?", 1)))
+	assert.Equal(t, books, result)
+
+	assert.Nil(t, repo.FindAll(context.TODO(), &result, rel.SQL("select * from books where category_id=?", 5)))
+	assert.Equal(t, books, result)
+
+	// not match
+	assert.Panics(t, func() {
+		repo.FindAll(context.TODO(), &result, rel.SQL("select * from books where category_id=?", 1))
+	})
+
+	// not match
+	assert.Panics(t, func() {
+		repo.FindAll(context.TODO(), &result, rel.SQL("select * from books where title=?", "books"))
+	})
+	repo.AssertExpectations(t)
+}
+
 func TestFindAll_assert(t *testing.T) {
 	var (
 		repo = New()

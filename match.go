@@ -92,7 +92,7 @@ func matchSortQuery(a []rel.SortQuery, b []rel.SortQuery) bool {
 }
 
 func matchSQLQuery(a rel.SQLQuery, b rel.SQLQuery) bool {
-	if a.Statement != b.Statement && len(a.Values) != len(b.Values) {
+	if a.Statement != b.Statement || len(a.Values) != len(b.Values) {
 		return false
 	}
 
