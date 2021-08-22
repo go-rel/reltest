@@ -56,10 +56,6 @@ func matchJoinQuery(a []rel.JoinQuery, b []rel.JoinQuery) bool {
 }
 
 func matchFilterQuery(a rel.FilterQuery, b rel.FilterQuery) bool {
-	if a.Type != b.Type || a.Field != b.Field || (a.Value != b.Value && a.Value != Any) || len(a.Inner) != len(b.Inner) {
-		return false
-	}
-
 	switch v := a.Value.(type) {
 	case rel.SubQuery:
 		if bSubQuery, _ := b.Value.(rel.SubQuery); v.Prefix != bSubQuery.Prefix || !matchQuery(v.Query, bSubQuery.Query) {
@@ -70,7 +66,10 @@ func matchFilterQuery(a rel.FilterQuery, b rel.FilterQuery) bool {
 			return false
 		}
 	default:
-		if a.Value != b.Value && a.Value != Any {
+		if a.Type != b.Type ||
+			a.Field != b.Field ||
+			(a.Value != b.Value && a.Value != Any) ||
+			len(a.Inner) != len(b.Inner) {
 			return false
 		}
 	}
