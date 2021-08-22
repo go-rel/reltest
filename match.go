@@ -47,7 +47,7 @@ func matchJoinQuery(a []rel.JoinQuery, b []rel.JoinQuery) bool {
 
 	for i := range a {
 		// TODO: argument support any
-		if a[i].Mode != b[i].Mode || a[i].Table != b[i].Table || a[i].From != b[i].From || a[i].To != b[i].To || reflect.DeepEqual(a[i].Arguments, b[i].Arguments) {
+		if a[i].Mode != b[i].Mode || a[i].Table != b[i].Table || a[i].From != b[i].From || a[i].To != b[i].To || !reflect.DeepEqual(a[i].Arguments, b[i].Arguments) {
 			return false
 		}
 	}
@@ -106,26 +106,6 @@ func matchSQLQuery(a rel.SQLQuery, b rel.SQLQuery) bool {
 	return true
 }
 
-func matchMutation(a rel.Mutation, b rel.Mutation) bool {
-	if len(a.Mutates) != len(b.Mutates) || len(a.Assoc) != len(b.Assoc) || a.Unscoped != b.Unscoped || a.Reload != b.Reload || a.Cascade != b.Cascade {
-		return false
-	}
-
-	for i := range a.Mutates {
-		if !matchMutate(a.Mutates[i], b.Mutates[i]) {
-			return false
-		}
-	}
-
-	for i := range a.Assoc {
-		if !matchAssocMutation(a.Assoc[i], b.Assoc[i]) {
-			return false
-		}
-	}
-
-	return true
-}
-
 func matchMutators(a []rel.Mutator, b []rel.Mutator) bool {
 	if len(a) != len(b) {
 		return false
@@ -158,20 +138,6 @@ func matchMutates(a []rel.Mutate, b []rel.Mutate) bool {
 
 	for i := range a {
 		if !matchMutate(a[i], b[i]) {
-			return false
-		}
-	}
-
-	return true
-}
-
-func matchAssocMutation(a rel.AssocMutation, b rel.AssocMutation) bool {
-	if len(a.Mutations) != len(b.Mutations) || reflect.DeepEqual(a.DeletedIDs, b.DeletedIDs) {
-		return false
-	}
-
-	for i := range a.Mutations {
-		if !matchMutation(a.Mutations[i], b.Mutations[i]) {
 			return false
 		}
 	}

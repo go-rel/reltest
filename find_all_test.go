@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/go-rel/rel"
+	"github.com/go-rel/rel/join"
 	"github.com/go-rel/rel/where"
 	"github.com/stretchr/testify/assert"
 )
@@ -90,6 +91,39 @@ func TestFindAll_noMatch(t *testing.T) {
 	})
 
 	repo.AssertExpectations(t)
+}
+
+func TestFindAll_join(t *testing.T) {
+	var (
+		repo   = New()
+		result []Book
+		books  = []Book{
+			{ID: 1, Title: "Golang for dummies"},
+			{ID: 2, Title: "Rel for dummies"},
+		}
+	)
+
+	repo.ExpectFindAll(where.Eq("tags.name", "Education"), join.On("tags", "tags.book_id", "books.id")).Result(books)
+	assert.Nil(t, repo.FindAll(context.TODO(), &result, where.Eq("tags.name", "Education"), join.On("tags", "tags.book_id", "books.id")))
+	assert.Equal(t, books, result)
+	repo.AssertExpectations(t)
+}
+
+func TestFindAll_joinNoMatch(t *testing.T) {
+	var (
+		repo   = New()
+		result []Book
+		books  = []Book{
+			{ID: 1, Title: "Golang for dummies"},
+			{ID: 2, Title: "Rel for dummies"},
+		}
+	)
+
+	repo.ExpectFindAll(where.Eq("status", "available")).Result(books)
+	repo.ExpectFindAll(where.Eq("tags.name", "Education"), join.On("labels", "tags.book_id", "books.id")).Result(books)
+	assert.Panics(t, func() {
+		repo.FindAll(context.TODO(), &result, where.Eq("tags.name", "Education"), join.On("tags", "tags.book_id", "books.id"))
+	})
 }
 
 func TestFindAll_assert(t *testing.T) {
