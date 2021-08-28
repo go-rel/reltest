@@ -46,3 +46,12 @@ func TestMatchMutators(t *testing.T) {
 	bookB.Author.Name = "B Name"
 	assert.False(t, matchMutators([]rel.Mutator{chA}, []rel.Mutator{chB}))
 }
+
+func TestMatchMutates(t *testing.T) {
+	assert.True(t, matchMutates(nil, nil))
+	assert.False(t, matchMutates(nil, []rel.Mutate{rel.Set("a", 1)}))
+
+	assert.True(t, matchMutates([]rel.Mutate{rel.Set("a", 1)}, []rel.Mutate{rel.Set("a", 1)}))
+	assert.True(t, matchMutates([]rel.Mutate{rel.Set("a", "a"), rel.Inc("b")}, []rel.Mutate{rel.Set("a", "a"), rel.Inc("b")}))
+	assert.False(t, matchMutates([]rel.Mutate{rel.Set("a", 1)}, []rel.Mutate{rel.Set("a", "1")}))
+}
