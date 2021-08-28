@@ -74,7 +74,20 @@ func TestFind_assert(t *testing.T) {
 		repo.Find(context.TODO(), &result, where.Eq("title", "golang"))
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tFind(ctx, <Any>, rel.Where(where.Eq(\"title\", \"go\")))", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nFind(ctx, <Any>, rel.Where(where.Eq(\"title\", \"go\")))", nt.lastLog)
+}
+
+func TestFind_assert_transaction(t *testing.T) {
+	var (
+		repo = New()
+	)
+
+	repo.ExpectTransaction(func(repo *Repository) {
+		repo.ExpectFind(where.Eq("title", "go"))
+	})
+
+	assert.False(t, repo.AssertExpectations(nt))
+	assert.Equal(t, "FAIL: Mock defined but not called:\n<Transaction: 1> Find(ctx, <Any>, rel.Where(where.Eq(\"title\", \"go\")))", nt.lastLog)
 }
 
 func TestFind_String(t *testing.T) {

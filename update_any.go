@@ -12,7 +12,6 @@ type updateAny []*MockUpdateAny
 func (ua *updateAny) register(ctxData ctxData, query rel.Query, mutates ...rel.Mutate) *MockUpdateAny {
 	mua := &MockUpdateAny{
 		assert:     &Assert{ctxData: ctxData},
-		ctxData:    ctxData,
 		argQuery:   query,
 		argMutates: mutates,
 	}
@@ -37,10 +36,16 @@ func (ua updateAny) execute(ctx context.Context, query rel.Query, mutates ...rel
 		}
 	}
 
-	panic(failExecuteMessage(MockUpdateAny{argQuery: query, argMutates: mutates}, ua))
+	mua := &MockUpdateAny{
+		assert:     &Assert{ctxData: fetchContext(ctx)},
+		argQuery:   query,
+		argMutates: mutates,
+	}
+	panic(failExecuteMessage(mua, ua))
 }
 
 func (ua *updateAny) assert(t T) bool {
+	t.Helper()
 	for _, mua := range *ua {
 		if !mua.assert.assert(t, mua) {
 			return false
@@ -55,7 +60,6 @@ func (ua *updateAny) assert(t T) bool {
 type MockUpdateAny struct {
 	assert          *Assert
 	unsafe          bool
-	ctxData         ctxData
 	argQuery        rel.Query
 	argMutates      []rel.Mutate
 	retUpdatedCount int
@@ -93,7 +97,7 @@ func (mua MockUpdateAny) String() string {
 		argMutates += fmt.Sprintf(", %v", mua.argMutates[i])
 	}
 
-	return fmt.Sprintf("UpdateAny(ctx, %s%s)", mua.argQuery, argMutates)
+	return mua.assert.sprintf("UpdateAny(ctx, %s%s)", mua.argQuery, argMutates)
 }
 
 // ExpectString representation of mocked call.
@@ -103,5 +107,5 @@ func (mua MockUpdateAny) ExpectString() string {
 		argMutates += fmt.Sprintf(", %v", mua.argMutates[i])
 	}
 
-	return fmt.Sprintf("ExpectUpdateAny(%s%s)", mua.argQuery, argMutates)
+	return mua.assert.sprintf("ExpectUpdateAny(%s%s)", mua.argQuery, argMutates)
 }

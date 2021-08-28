@@ -29,10 +29,15 @@ func (ia insertAll) execute(ctx context.Context, records interface{}) error {
 		}
 	}
 
-	panic(failExecuteMessage(MockInsertAll{argRecord: records}, ia))
+	mia := &MockInsertAll{
+		assert:    &Assert{ctxData: fetchContext(ctx)},
+		argRecord: records,
+	}
+	panic(failExecuteMessage(mia, ia))
 }
 
 func (ia *insertAll) assert(t T) bool {
+	t.Helper()
 	for _, mia := range *ia {
 		if !mia.assert.assert(t, mia) {
 			return false
@@ -106,10 +111,10 @@ func (mia MockInsertAll) String() string {
 		argRecord = fmt.Sprintf("<Table: %s>", mia.argRecordTable)
 	}
 
-	return fmt.Sprintf("InsertAll(ctx, %s)", argRecord)
+	return mia.assert.sprintf("InsertAll(ctx, %s)", argRecord)
 }
 
 // ExpectString representation of mocked call.
 func (mia MockInsertAll) ExpectString() string {
-	return fmt.Sprintf("InsertAll().ForType(\"%T\")", mia.argRecord)
+	return mia.assert.sprintf("InsertAll().ForType(\"%T\")", mia.argRecord)
 }

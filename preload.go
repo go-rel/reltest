@@ -43,10 +43,17 @@ func (p preload) execute(ctx context.Context, records interface{}, field string,
 		}
 	}
 
-	panic(failExecuteMessage(MockPreload{argRecords: records, argField: field, argQuery: query}, p))
+	mp := &MockPreload{
+		assert:     &Assert{ctxData: fetchContext(ctx)},
+		argRecords: records,
+		argField:   field,
+		argQuery:   query,
+	}
+	panic(failExecuteMessage(mp, p))
 }
 
 func (p *preload) assert(t T) bool {
+	t.Helper()
 	for _, mp := range *p {
 		if !mp.assert.assert(t, mp) {
 			return false
@@ -115,12 +122,12 @@ func (mp MockPreload) String() string {
 		argRecords = fmt.Sprintf("<Type: %s>", mp.argRecordsType)
 	}
 
-	return fmt.Sprintf("Preload(ctx, %s, %q%s)", argRecords, mp.argField, mp.queryParamString())
+	return mp.assert.sprintf("Preload(ctx, %s, %q%s)", argRecords, mp.argField, mp.queryParamString())
 }
 
 // ExpectString representation of mocked call.
 func (mp MockPreload) ExpectString() string {
-	return fmt.Sprintf("ExpectPreload(%q%s).ForType(\"%T\")", mp.argField, mp.queryParamString(), mp.argRecords)
+	return mp.assert.sprintf("ExpectPreload(%q%s).ForType(\"%T\")", mp.argField, mp.queryParamString(), mp.argRecords)
 }
 
 type slice interface {

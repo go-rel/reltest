@@ -83,7 +83,7 @@ func TestDeleteAll_assertFor(t *testing.T) {
 		repo.DeleteAll(context.TODO(), &[]Book{{ID: 2}})
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tDeleteAll(ctx, &[]reltest.Book{reltest.Book{ID: 1}})", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nDeleteAll(ctx, &[]reltest.Book{reltest.Book{ID: 1}})", nt.lastLog)
 }
 
 func TestDeleteAll_assertForTable(t *testing.T) {
@@ -97,7 +97,7 @@ func TestDeleteAll_assertForTable(t *testing.T) {
 		repo.DeleteAll(context.TODO(), &[]Book{})
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tDeleteAll(ctx, <Table: users>)", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nDeleteAll(ctx, <Table: users>)", nt.lastLog)
 }
 
 func TestDeleteAll_assertForType(t *testing.T) {
@@ -111,7 +111,20 @@ func TestDeleteAll_assertForType(t *testing.T) {
 		repo.DeleteAll(context.TODO(), &[]Book{})
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tDeleteAll(ctx, <Type: *[]User>)", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nDeleteAll(ctx, <Type: *[]User>)", nt.lastLog)
+}
+
+func TestDeleteAll_assert_transaction(t *testing.T) {
+	var (
+		repo = New()
+	)
+
+	repo.ExpectTransaction(func(repo *Repository) {
+		repo.ExpectDeleteAll().ForType("[]User")
+	})
+
+	assert.False(t, repo.AssertExpectations(nt))
+	assert.Equal(t, "FAIL: Mock defined but not called:\n<Transaction: 1> DeleteAll(ctx, <Type: *[]User>)", nt.lastLog)
 }
 
 func TestDeleteAll_String(t *testing.T) {

@@ -2,7 +2,6 @@ package reltest
 
 import (
 	"context"
-	"fmt"
 	"reflect"
 
 	"github.com/go-rel/rel"
@@ -32,10 +31,16 @@ func (fca findAndCountAll) execute(ctx context.Context, records interface{}, que
 		}
 	}
 
-	panic(failExecuteMessage(MockFindAndCountAll{argQuery: query, argRecords: records}, fca))
+	mfca := &MockFindAndCountAll{
+		assert:     &Assert{ctxData: fetchContext(ctx)},
+		argQuery:   query,
+		argRecords: records,
+	}
+	panic(failExecuteMessage(mfca, fca))
 }
 
 func (fca *findAndCountAll) assert(t T) bool {
+	t.Helper()
 	for _, mfca := range *fca {
 		if !mfca.assert.assert(t, mfca) {
 			return false
@@ -76,10 +81,10 @@ func (mfca *MockFindAndCountAll) ConnectionClosed() *Assert {
 
 // String representation of mocked call.
 func (mfca MockFindAndCountAll) String() string {
-	return fmt.Sprintf("FindAndCountAll(ctx, <Any>, %s)", mfca.argQuery)
+	return mfca.assert.sprintf("FindAndCountAll(ctx, <Any>, %s)", mfca.argQuery)
 }
 
 // ExpectString representation of mocked call.
 func (mfca MockFindAndCountAll) ExpectString() string {
-	return fmt.Sprintf("ExpectFindAndCountAll(%s)", mfca.argQuery)
+	return mfca.assert.sprintf("ExpectFindAndCountAll(%s)", mfca.argQuery)
 }

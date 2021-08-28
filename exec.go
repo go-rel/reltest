@@ -27,10 +27,16 @@ func (e exec) execute(ctx context.Context, statement string, args ...interface{}
 		}
 	}
 
-	panic(failExecuteMessage(MockExec{argStatement: statement, argArgs: args}, e))
+	me := &MockExec{
+		assert:       &Assert{ctxData: fetchContext(ctx)},
+		argStatement: statement,
+		argArgs:      args,
+	}
+	panic(failExecuteMessage(me, e))
 }
 
 func (e *exec) assert(t T) bool {
+	t.Helper()
 	for _, me := range *e {
 		if !me.assert.assert(t, me) {
 			return false
@@ -76,7 +82,7 @@ func (me MockExec) String() string {
 		args += fmt.Sprintf(", %v", me.argArgs[i])
 	}
 
-	return fmt.Sprintf("Exec(ctx, \"%s\"%s)", me.argStatement, args)
+	return me.assert.sprintf("Exec(ctx, \"%s\"%s)", me.argStatement, args)
 }
 
 // ExpectString representation of mocked call.
@@ -86,5 +92,5 @@ func (me MockExec) ExpectString() string {
 		args += fmt.Sprintf(", %v", me.argArgs[i])
 	}
 
-	return fmt.Sprintf("ExpectString(\"%s\"%s)", me.argStatement, args)
+	return me.assert.sprintf("ExpectString(\"%s\"%s)", me.argStatement, args)
 }

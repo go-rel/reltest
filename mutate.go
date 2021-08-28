@@ -21,7 +21,7 @@ func (m *mutate) register(name string, ctxData ctxData, mutators ...rel.Mutator)
 	return mm
 }
 
-func (m mutate) execute(ctx context.Context, record interface{}, mutators ...rel.Mutator) error {
+func (m mutate) execute(name string, ctx context.Context, record interface{}, mutators ...rel.Mutator) error {
 	for _, mm := range m {
 		if (mm.argRecord == nil || reflect.DeepEqual(mm.argRecord, record)) &&
 			(mm.argRecordType == "" || mm.argRecordType == reflect.TypeOf(record).String()) &&
@@ -33,10 +33,17 @@ func (m mutate) execute(ctx context.Context, record interface{}, mutators ...rel
 		}
 	}
 
-	panic(failExecuteMessage(MockMutate{argRecord: record, argMutators: mutators}, m))
+	mm := &MockMutate{
+		assert:      &Assert{ctxData: fetchContext(ctx)},
+		name:        name,
+		argRecord:   record,
+		argMutators: mutators,
+	}
+	panic(failExecuteMessage(mm, m))
 }
 
 func (m *mutate) assert(t T) bool {
+	t.Helper()
 	for _, mm := range *m {
 		if !mm.assert.assert(t, mm) {
 			return false
@@ -126,7 +133,7 @@ func (mm MockMutate) String() string {
 		argMutators += fmt.Sprintf(", %v", mm.argMutators[i])
 	}
 
-	return fmt.Sprintf("%s(ctx, %s%s)", mm.name, argRecord, argMutators)
+	return mm.assert.sprintf("%s(ctx, %s%s)", mm.name, argRecord, argMutators)
 }
 
 // ExpectString representation of mocked call.
@@ -140,5 +147,5 @@ func (mm MockMutate) ExpectString() string {
 		}
 	}
 
-	return fmt.Sprintf("Expect%s(%s).ForType(\"%T\")", mm.name, argMutators, mm.argRecord)
+	return mm.assert.sprintf("Expect%s(%s).ForType(\"%T\")", mm.name, argMutators, mm.argRecord)
 }

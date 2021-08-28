@@ -58,7 +58,20 @@ func TestAggregate_assert(t *testing.T) {
 		repo.Aggregate(context.TODO(), rel.From("books"), "sum", "id")
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tAggregate(ctx, rel.From(\"users\"), \"sum\", \"id\")", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nAggregate(ctx, rel.From(\"users\"), \"sum\", \"id\")", nt.lastLog)
+}
+
+func TestAggregate_assert_transaction(t *testing.T) {
+	var (
+		repo = New()
+	)
+
+	repo.ExpectTransaction(func(repo *Repository) {
+		repo.ExpectAggregate(rel.From("users"), "sum", "id")
+	})
+
+	assert.False(t, repo.AssertExpectations(nt))
+	assert.Equal(t, "FAIL: Mock defined but not called:\n<Transaction: 1> Aggregate(ctx, rel.From(\"users\"), \"sum\", \"id\")", nt.lastLog)
 }
 
 func TestAggregate_String(t *testing.T) {

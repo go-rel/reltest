@@ -58,7 +58,20 @@ func TestCount_assert(t *testing.T) {
 		repo.Count(context.TODO(), "books")
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tCount(ctx, \"users\", rel.From(\"users\"))", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nCount(ctx, \"users\", rel.From(\"users\"))", nt.lastLog)
+}
+
+func TestCount_assert_transaction(t *testing.T) {
+	var (
+		repo = New()
+	)
+
+	repo.ExpectTransaction(func(repo *Repository) {
+		repo.ExpectCount("users")
+	})
+
+	assert.False(t, repo.AssertExpectations(nt))
+	assert.Equal(t, "FAIL: Mock defined but not called:\n<Transaction: 1> Count(ctx, \"users\", rel.From(\"users\"))", nt.lastLog)
 }
 
 func TestCount_String(t *testing.T) {

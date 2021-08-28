@@ -20,6 +20,9 @@ func (t *noopt) Errorf(format string, args ...interface{}) {
 	t.lastLog = fmt.Sprintf(format, args...)
 }
 
+func (t *noopt) Helper() {
+}
+
 var nt = &noopt{}
 
 func TestAssert_default(t *testing.T) {

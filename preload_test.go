@@ -217,7 +217,20 @@ func TestPreload_assert(t *testing.T) {
 		repo.Preload(context.TODO(), &Book{}, "users")
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tPreload(ctx, <Type: *reltest.User>, \"books\")", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nPreload(ctx, <Type: *reltest.User>, \"books\")", nt.lastLog)
+}
+
+func TestPreload_assert_transaction(t *testing.T) {
+	var (
+		repo = New()
+	)
+
+	repo.ExpectTransaction(func(repo *Repository) {
+		repo.ExpectPreload("books").ForType("reltest.User")
+	})
+
+	assert.False(t, repo.AssertExpectations(nt))
+	assert.Equal(t, "FAIL: Mock defined but not called:\n<Transaction: 1> Preload(ctx, <Type: *reltest.User>, \"books\")", nt.lastLog)
 }
 
 func TestPreload_String(t *testing.T) {

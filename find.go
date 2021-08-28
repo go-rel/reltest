@@ -2,7 +2,6 @@ package reltest
 
 import (
 	"context"
-	"fmt"
 	"reflect"
 
 	"github.com/go-rel/rel"
@@ -32,10 +31,16 @@ func (f find) execute(ctx context.Context, record interface{}, queriers ...rel.Q
 		}
 	}
 
-	panic(failExecuteMessage(MockFind{argQuery: query, argRecord: record}, f))
+	mf := &MockFind{
+		assert:    &Assert{ctxData: fetchContext(ctx)},
+		argQuery:  query,
+		argRecord: record,
+	}
+	panic(failExecuteMessage(mf, f))
 }
 
 func (f *find) assert(t T) bool {
+	t.Helper()
 	for _, mf := range *f {
 		if !mf.assert.assert(t, mf) {
 			return false
@@ -79,10 +84,10 @@ func (mf *MockFind) NotFound() *Assert {
 
 // String representation of mocked call.
 func (mf MockFind) String() string {
-	return fmt.Sprintf("Find(ctx, <Any>, %s)", mf.argQuery)
+	return mf.assert.sprintf("Find(ctx, <Any>, %s)", mf.argQuery)
 }
 
 // ExpectString representation of mocked call.
 func (mf MockFind) ExpectString() string {
-	return fmt.Sprintf("ExpectFind(%s)", mf.argQuery)
+	return mf.assert.sprintf("ExpectFind(%s)", mf.argQuery)
 }

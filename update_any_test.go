@@ -118,7 +118,20 @@ func TestUpdateAny_assert(t *testing.T) {
 		repo.UpdateAny(context.TODO(), rel.From("books"), rel.Set("name", "rel"))
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tUpdateAny(ctx, rel.From(\"users\"), rel.Set(\"name\", <Any>))", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nUpdateAny(ctx, rel.From(\"users\"), rel.Set(\"name\", <Any>))", nt.lastLog)
+}
+
+func TestUpdateAny_assert_transaction(t *testing.T) {
+	var (
+		repo = New()
+	)
+
+	repo.ExpectTransaction(func(repo *Repository) {
+		repo.ExpectUpdateAny(rel.From("users"), rel.Set("name", Any))
+	})
+
+	assert.False(t, repo.AssertExpectations(nt))
+	assert.Equal(t, "FAIL: Mock defined but not called:\n<Transaction: 1> UpdateAny(ctx, rel.From(\"users\"), rel.Set(\"name\", <Any>))", nt.lastLog)
 }
 
 func TestUpdateAny_String(t *testing.T) {

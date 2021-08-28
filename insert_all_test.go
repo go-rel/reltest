@@ -63,7 +63,7 @@ func TestInsertAll_assert(t *testing.T) {
 		repo.InsertAll(context.TODO(), &[]Book{{Title: "Go"}})
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tInsertAll(ctx, &[]reltest.Book{reltest.Book{Title: Golang}})", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nInsertAll(ctx, &[]reltest.Book{reltest.Book{Title: Golang}})", nt.lastLog)
 }
 
 func TestInsertAll_assertForTable(t *testing.T) {
@@ -77,7 +77,7 @@ func TestInsertAll_assertForTable(t *testing.T) {
 		repo.InsertAll(context.TODO(), &[]Book{})
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tInsertAll(ctx, <Table: users>)", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nInsertAll(ctx, <Table: users>)", nt.lastLog)
 }
 
 func TestInsertAll_assertForType(t *testing.T) {
@@ -91,7 +91,20 @@ func TestInsertAll_assertForType(t *testing.T) {
 		repo.InsertAll(context.TODO(), &[]Book{})
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tInsertAll(ctx, <Type: *[]User>)", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nInsertAll(ctx, <Type: *[]User>)", nt.lastLog)
+}
+
+func TestInsertAll_assert_transaction(t *testing.T) {
+	var (
+		repo = New()
+	)
+
+	repo.ExpectTransaction(func(repo *Repository) {
+		repo.ExpectInsertAll().ForType("[]User")
+	})
+
+	assert.False(t, repo.AssertExpectations(nt))
+	assert.Equal(t, "FAIL: Mock defined but not called:\n<Transaction: 1> InsertAll(ctx, <Type: *[]User>)", nt.lastLog)
 }
 
 func TestInsertAll_String(t *testing.T) {

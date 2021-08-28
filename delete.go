@@ -32,10 +32,17 @@ func (d delete) execute(ctx context.Context, record interface{}, options ...rel.
 		}
 	}
 
-	panic(failExecuteMessage(MockDelete{argRecord: record, argOptions: options}, d))
+	md := &MockDelete{
+		assert:     &Assert{ctxData: fetchContext(ctx)},
+		argRecord:  record,
+		argOptions: options,
+	}
+
+	panic(failExecuteMessage(md, d))
 }
 
 func (d *delete) assert(t T) bool {
+	t.Helper()
 	for _, md := range *d {
 		if !md.assert.assert(t, md) {
 			return false
@@ -116,7 +123,7 @@ func (md MockDelete) String() string {
 		argCascade += fmt.Sprintf(", %v", md.argOptions[i])
 	}
 
-	return fmt.Sprintf("Delete(ctx, %s%s)", argRecord, argCascade)
+	return md.assert.sprintf("Delete(ctx, %s%s)", argRecord, argCascade)
 }
 
 // ExpectString representation of mocked call.
@@ -126,5 +133,5 @@ func (md MockDelete) ExpectString() string {
 		argOptions += fmt.Sprintf("%v", md.argOptions[i])
 	}
 
-	return fmt.Sprintf("ExpectDelete(%s).ForType(\"%T\")", argOptions, md.argRecord)
+	return md.assert.sprintf("ExpectDelete(%s).ForType(\"%T\")", argOptions, md.argRecord)
 }
