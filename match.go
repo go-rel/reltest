@@ -116,6 +116,10 @@ func matchMutators(a []rel.Mutator, b []rel.Mutator) bool {
 			if vb, ok := b[i].(rel.Mutate); !ok || !matchMutate(va, vb) {
 				return false
 			}
+		case rel.Changeset:
+			if vb, ok := b[i].(rel.Changeset); !ok || !reflect.DeepEqual(va.Changes(), vb.Changes()) {
+				return false
+			}
 		default:
 			if !reflect.DeepEqual(va, b[i]) {
 				return false

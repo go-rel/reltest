@@ -78,7 +78,20 @@ func TestFindAndCountAll_assert(t *testing.T) {
 		repo.FindAndCountAll(context.TODO(), &result, where.Eq("title", "golang"))
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tFindAndCountAll(ctx, <Any>, rel.Where(where.Eq(\"title\", \"go\")))", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nFindAndCountAll(ctx, <Any>, rel.Where(where.Eq(\"title\", \"go\")))", nt.lastLog)
+}
+
+func TestFindAndCountAll_assert_transaction(t *testing.T) {
+	var (
+		repo = New()
+	)
+
+	repo.ExpectTransaction(func(repo *Repository) {
+		repo.ExpectFindAndCountAll(where.Eq("title", "go"))
+	})
+
+	assert.False(t, repo.AssertExpectations(nt))
+	assert.Equal(t, "FAIL: Mock defined but not called:\n<Transaction: 1> FindAndCountAll(ctx, <Any>, rel.Where(where.Eq(\"title\", \"go\")))", nt.lastLog)
 }
 
 func TestFindAndCountAll_String(t *testing.T) {

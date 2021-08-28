@@ -119,7 +119,20 @@ func TestDeleteAny_assert(t *testing.T) {
 		repo.DeleteAny(context.TODO(), rel.From("books"))
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tDeleteAny(ctx, rel.From(\"users\"))", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nDeleteAny(ctx, rel.From(\"users\"))", nt.lastLog)
+}
+
+func TestDeleteAny_assert_transaction(t *testing.T) {
+	var (
+		repo = New()
+	)
+
+	repo.ExpectTransaction(func(repo *Repository) {
+		repo.ExpectDeleteAny(rel.From("users"))
+	})
+
+	assert.False(t, repo.AssertExpectations(nt))
+	assert.Equal(t, "FAIL: Mock defined but not called:\n<Transaction: 1> DeleteAny(ctx, rel.From(\"users\"))", nt.lastLog)
 }
 
 func TestDeleteAny_String(t *testing.T) {

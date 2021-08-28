@@ -2,7 +2,6 @@ package reltest
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/go-rel/rel"
 )
@@ -29,10 +28,16 @@ func (c count) execute(ctx context.Context, collection string, queriers ...rel.Q
 		}
 	}
 
-	panic(failExecuteMessage(MockCount{argCollection: collection, argQuery: query}, c))
+	mc := &MockCount{
+		assert:        &Assert{ctxData: fetchContext(ctx)},
+		argCollection: collection,
+		argQuery:      query,
+	}
+	panic(failExecuteMessage(mc, c))
 }
 
 func (c *count) assert(t T) bool {
+	t.Helper()
 	for _, mc := range *c {
 		if !mc.assert.assert(t, mc) {
 			return false
@@ -72,10 +77,10 @@ func (mc *MockCount) ConnectionClosed() *Assert {
 
 // String representation of mocked call.
 func (mc MockCount) String() string {
-	return fmt.Sprintf(`Count(ctx, "%s", %s)`, mc.argCollection, mc.argQuery)
+	return mc.assert.sprintf(`Count(ctx, "%s", %s)`, mc.argCollection, mc.argQuery)
 }
 
 // ExpectString representation of mocked call.
 func (mc MockCount) ExpectString() string {
-	return fmt.Sprintf(`ExpectCount("%s", %s)`, mc.argCollection, mc.argQuery)
+	return mc.assert.sprintf(`ExpectCount("%s", %s)`, mc.argCollection, mc.argQuery)
 }

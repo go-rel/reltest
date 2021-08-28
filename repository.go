@@ -153,7 +153,7 @@ func (r *Repository) ExpectFindAndCountAll(queriers ...rel.Querier) *MockFindAnd
 // Insert provides a mock function with given fields: record, mutators
 func (r *Repository) Insert(ctx context.Context, record interface{}, mutators ...rel.Mutator) error {
 	r.repo.Insert(ctx, record, mutators...)
-	return r.insert.execute(ctx, record, mutators...)
+	return r.insert.execute("Insert", ctx, record, mutators...)
 }
 
 // MustInsert provides a mock function with given fields: record, mutators
@@ -188,7 +188,7 @@ func (r *Repository) Update(ctx context.Context, record interface{}, mutators ..
 		return err
 	}
 
-	return r.update.execute(ctx, record, mutators...)
+	return r.update.execute("Update", ctx, record, mutators...)
 }
 
 // MustUpdate provides a mock function with given fields: record, mutators
@@ -342,6 +342,7 @@ func (r *Repository) ExpectTransaction(fn func(*Repository)) {
 
 // AssertExpectations asserts that everything was in fact called as expected. Calls may have occurred in any order.
 func (r *Repository) AssertExpectations(t T) bool {
+	t.Helper()
 	return r.iterate.assert(t) &&
 		r.count.assert(t) &&
 		r.aggregate.assert(t) &&

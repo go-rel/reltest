@@ -182,16 +182,30 @@ func TestFindAll_sql(t *testing.T) {
 
 func TestFindAll_assert(t *testing.T) {
 	var (
-		repo = New()
+		repo   = New()
+		result []Book
 	)
 
 	repo.ExpectFindAll(where.Eq("status", "paid"))
 
 	assert.Panics(t, func() {
-		repo.FindAll(context.TODO(), where.Eq("status", "pending"))
+		repo.FindAll(context.TODO(), &result, where.Eq("status", "pending"))
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tFindAll(ctx, <Any>, rel.Where(where.Eq(\"status\", \"paid\")))", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nFindAll(ctx, <Any>, rel.Where(where.Eq(\"status\", \"paid\")))", nt.lastLog)
+}
+
+func TestFindAll_assert_transaction(t *testing.T) {
+	var (
+		repo = New()
+	)
+
+	repo.ExpectTransaction(func(repo *Repository) {
+		repo.ExpectFindAll(where.Eq("status", "paid"))
+	})
+
+	assert.False(t, repo.AssertExpectations(nt))
+	assert.Equal(t, "FAIL: Mock defined but not called:\n<Transaction: 1> FindAll(ctx, <Any>, rel.Where(where.Eq(\"status\", \"paid\")))", nt.lastLog)
 }
 
 func TestFindAll_String(t *testing.T) {

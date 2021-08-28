@@ -30,10 +30,16 @@ func (i iterate) execute(ctx context.Context, query rel.Query, options ...rel.It
 		}
 	}
 
-	panic(failExecuteMessage(MockIterate{argQuery: query, argOptions: options}, i))
+	mi := &MockIterate{
+		assert:     &Assert{ctxData: fetchContext(ctx)},
+		argQuery:   query,
+		argOptions: options,
+	}
+	panic(failExecuteMessage(mi, i))
 }
 
 func (i *iterate) assert(t T) bool {
+	t.Helper()
 	for _, mi := range *i {
 		if !mi.assert.assert(t, mi) {
 			return false
@@ -115,7 +121,7 @@ func (mi MockIterate) String() string {
 		argOptions += fmt.Sprintf(", %v", mi.argOptions[i])
 	}
 
-	return fmt.Sprintf("Iterate(ctx, %s%s)", mi.argQuery, argOptions)
+	return mi.assert.sprintf("Iterate(ctx, %s%s)", mi.argQuery, argOptions)
 }
 
 // ExpectString representation of mocked call.
@@ -125,5 +131,5 @@ func (mi MockIterate) ExpectString() string {
 		argOptions += fmt.Sprintf(", %v", mi.argOptions[i])
 	}
 
-	return fmt.Sprintf("ExpectIterate(%s%s)", mi.argQuery, argOptions)
+	return mi.assert.sprintf("ExpectIterate(%s%s)", mi.argQuery, argOptions)
 }

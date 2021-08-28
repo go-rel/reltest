@@ -10,6 +10,7 @@ import (
 type T interface {
 	Logf(format string, args ...interface{})
 	Errorf(format string, args ...interface{})
+	Helper()
 }
 
 type Assert struct {
@@ -49,14 +50,21 @@ func (a Assert) assert(t T, mock interface{}) bool {
 		return true
 	}
 
-	// TODO: stacktrace not correct
+	t.Helper()
 	if a.repeatability > 0 {
-		t.Errorf("FAIL: Need to make %d more call(s) to satisfy mock:\n\t%s", a.repeatability-a.totalCalls, mock)
+		t.Errorf("FAIL: Need to make %d more call(s) to satisfy mock:\n%s", a.repeatability-a.totalCalls, mock)
 	} else {
-		t.Errorf("FAIL: Mock defined but not called:\n\t%s", mock)
+		t.Errorf("FAIL: Mock defined but not called:\n%s", mock)
 	}
 
 	return false
+}
+
+func (a Assert) sprintf(format string, args ...interface{}) string {
+	if a.ctxData.txDepth != 0 {
+		return a.ctxData.String() + " " + fmt.Sprintf(format, args...)
+	}
+	return fmt.Sprintf(format, args...)
 }
 
 func failExecuteMessage(call interface{}, mocks interface{}) string {

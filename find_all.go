@@ -2,7 +2,6 @@ package reltest
 
 import (
 	"context"
-	"fmt"
 	"reflect"
 
 	"github.com/go-rel/rel"
@@ -32,10 +31,16 @@ func (fa findAll) execute(ctx context.Context, records interface{}, queriers ...
 		}
 	}
 
-	panic(failExecuteMessage(MockFindAll{argQuery: query, argRecords: records}, fa))
+	mfa := &MockFindAll{
+		assert:     &Assert{ctxData: fetchContext(ctx)},
+		argQuery:   query,
+		argRecords: records,
+	}
+	panic(failExecuteMessage(mfa, fa))
 }
 
 func (fa *findAll) assert(t T) bool {
+	t.Helper()
 	for _, mfa := range *fa {
 		if !mfa.assert.assert(t, mfa) {
 			return false
@@ -74,10 +79,10 @@ func (mfa *MockFindAll) ConnectionClosed() *Assert {
 
 // String representation of mocked call.
 func (mfa MockFindAll) String() string {
-	return fmt.Sprintf("FindAll(ctx, <Any>, %s)", mfa.argQuery)
+	return mfa.assert.sprintf("FindAll(ctx, <Any>, %s)", mfa.argQuery)
 }
 
 // ExpectString representation of mocked call.
 func (mfa MockFindAll) ExpectString() string {
-	return fmt.Sprintf("ExpectFindAll(%s)", mfa.argQuery)
+	return mfa.assert.sprintf("ExpectFindAll(%s)", mfa.argQuery)
 }

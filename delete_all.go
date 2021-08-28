@@ -29,10 +29,15 @@ func (da deleteAll) execute(ctx context.Context, record interface{}) error {
 		}
 	}
 
-	panic(failExecuteMessage(MockDeleteAll{argRecord: record}, da))
+	mda := &MockDeleteAll{
+		assert:    &Assert{ctxData: fetchContext(ctx)},
+		argRecord: record,
+	}
+	panic(failExecuteMessage(mda, da))
 }
 
 func (da *deleteAll) assert(t T) bool {
+	t.Helper()
 	for _, mda := range *da {
 		if !mda.assert.assert(t, mda) {
 			return false
@@ -98,10 +103,10 @@ func (mda MockDeleteAll) String() string {
 		argRecord = fmt.Sprintf("<Table: %s>", mda.argRecordTable)
 	}
 
-	return fmt.Sprintf("DeleteAll(ctx, %s)", argRecord)
+	return mda.assert.sprintf("DeleteAll(ctx, %s)", argRecord)
 }
 
 // ExpectString representation of mocked call.
 func (mda MockDeleteAll) ExpectString() string {
-	return fmt.Sprintf(`ExpectDeleteAll().ForType("%T")`, mda.argRecord)
+	return mda.assert.sprintf(`ExpectDeleteAll().ForType("%T")`, mda.argRecord)
 }

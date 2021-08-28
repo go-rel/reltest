@@ -110,7 +110,7 @@ func TestDelete_assertFor(t *testing.T) {
 		repo.Delete(context.TODO(), &Book{ID: 1})
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tDelete(ctx, &reltest.Book{ID: 2})", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nDelete(ctx, &reltest.Book{ID: 2})", nt.lastLog)
 }
 
 func TestDelete_assertForTable(t *testing.T) {
@@ -124,7 +124,7 @@ func TestDelete_assertForTable(t *testing.T) {
 		repo.Delete(context.TODO(), &Book{})
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tDelete(ctx, <Table: users>)", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nDelete(ctx, <Table: users>)", nt.lastLog)
 }
 
 func TestDelete_assertForType(t *testing.T) {
@@ -138,7 +138,7 @@ func TestDelete_assertForType(t *testing.T) {
 		repo.Delete(context.TODO(), &Book{})
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tDelete(ctx, <Type: *User>)", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nDelete(ctx, <Type: *User>)", nt.lastLog)
 }
 
 func TestDelete_assertForContains(t *testing.T) {
@@ -152,7 +152,7 @@ func TestDelete_assertForContains(t *testing.T) {
 		repo.Delete(context.TODO(), &Book{ID: 1})
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tDelete(ctx, <Contains: reltest.Book{ID: 3}>)", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nDelete(ctx, <Contains: reltest.Book{ID: 3}>)", nt.lastLog)
 }
 
 func TestDelete_assertCascade(t *testing.T) {
@@ -166,7 +166,20 @@ func TestDelete_assertCascade(t *testing.T) {
 		repo.Delete(context.TODO(), &Book{})
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tDelete(ctx, <Any>, rel.Cascade(true))", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nDelete(ctx, <Any>, rel.Cascade(true))", nt.lastLog)
+}
+
+func TestDelete_assert_transaction(t *testing.T) {
+	var (
+		repo = New()
+	)
+
+	repo.ExpectTransaction(func(repo *Repository) {
+		repo.ExpectDelete(rel.Cascade(true))
+	})
+
+	assert.False(t, repo.AssertExpectations(nt))
+	assert.Equal(t, "FAIL: Mock defined but not called:\n<Transaction: 1> Delete(ctx, <Any>, rel.Cascade(true))", nt.lastLog)
 }
 
 func TestDelete_String(t *testing.T) {

@@ -124,7 +124,20 @@ func TestIterate_assert(t *testing.T) {
 		repo.Iterate(context.TODO(), rel.From("books"))
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tIterate(ctx, rel.From(\"users\"), rel.BatchSize(10))", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nIterate(ctx, rel.From(\"users\"), rel.BatchSize(10))", nt.lastLog)
+}
+
+func TestIterate_assert_transaction(t *testing.T) {
+	var (
+		repo = New()
+	)
+
+	repo.ExpectTransaction(func(repo *Repository) {
+		repo.ExpectIterate(rel.From("users"), rel.BatchSize(10))
+	})
+
+	assert.False(t, repo.AssertExpectations(nt))
+	assert.Equal(t, "FAIL: Mock defined but not called:\n<Transaction: 1> Iterate(ctx, rel.From(\"users\"), rel.BatchSize(10))", nt.lastLog)
 }
 
 func TestIterate_String(t *testing.T) {

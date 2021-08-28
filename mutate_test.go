@@ -184,7 +184,7 @@ func TestInsert_assertForTable(t *testing.T) {
 		repo.Insert(context.TODO(), &Book{})
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tInsert(ctx, <Table: users>)", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nInsert(ctx, <Table: users>)", nt.lastLog)
 }
 
 func TestInsert_assertForType(t *testing.T) {
@@ -198,7 +198,7 @@ func TestInsert_assertForType(t *testing.T) {
 		repo.Insert(context.TODO(), &Book{})
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tInsert(ctx, <Type: *[]User>)", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nInsert(ctx, <Type: *[]User>)", nt.lastLog)
 }
 
 func TestInsert_assertForContains(t *testing.T) {
@@ -212,7 +212,20 @@ func TestInsert_assertForContains(t *testing.T) {
 		repo.Insert(context.TODO(), &Book{Title: "Golang"})
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tInsert(ctx, <Contains: reltest.Book{Title: Go}>)", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nInsert(ctx, <Contains: reltest.Book{Title: Go}>)", nt.lastLog)
+}
+
+func TestInsert_assert_transaction(t *testing.T) {
+	var (
+		repo = New()
+	)
+
+	repo.ExpectTransaction(func(repo *Repository) {
+		repo.ExpectInsert().ForTable("users")
+	})
+
+	assert.False(t, repo.AssertExpectations(nt))
+	assert.Equal(t, "FAIL: Mock defined but not called:\n<Transaction: 1> Insert(ctx, <Table: users>)", nt.lastLog)
 }
 
 func TestInsert_String(t *testing.T) {
@@ -626,7 +639,20 @@ func TestUpdate_assert(t *testing.T) {
 		repo.Update(context.TODO(), &Book{})
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tUpdate(ctx, <Table: users>)", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nUpdate(ctx, <Table: users>)", nt.lastLog)
+}
+
+func TestUpdate_assert_transaction(t *testing.T) {
+	var (
+		repo = New()
+	)
+
+	repo.ExpectTransaction(func(repo *Repository) {
+		repo.ExpectUpdate().ForTable("users")
+	})
+
+	assert.False(t, repo.AssertExpectations(nt))
+	assert.Equal(t, "FAIL: Mock defined but not called:\n<Transaction: 1> Update(ctx, <Table: users>)", nt.lastLog)
 }
 
 func TestUpdate_String(t *testing.T) {

@@ -63,7 +63,20 @@ func TestExec_assert(t *testing.T) {
 		repo.Exec(context.TODO(), "UPDATE users SET something = ? WHERE something2 = ?;", 1, 2)
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\n\tExec(ctx, \"UPDATE users SET something = ? WHERE something2 = ?;\", 1, 2)", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nExec(ctx, \"UPDATE users SET something = ? WHERE something2 = ?;\", 1, 2)", nt.lastLog)
+}
+
+func TestExec_assert_transaction(t *testing.T) {
+	var (
+		repo = New()
+	)
+
+	repo.ExpectTransaction(func(repo *Repository) {
+		repo.ExpectExec("UPDATE users SET something = ? WHERE something2 = ?;", 1, 2)
+	})
+
+	assert.False(t, repo.AssertExpectations(nt))
+	assert.Equal(t, "FAIL: Mock defined but not called:\n<Transaction: 1> Exec(ctx, \"UPDATE users SET something = ? WHERE something2 = ?;\", 1, 2)", nt.lastLog)
 }
 
 func TestExec_String(t *testing.T) {

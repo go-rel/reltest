@@ -12,11 +12,7 @@ type ctxData struct {
 }
 
 func (cd ctxData) String() string {
-	if cd.txDepth != 0 {
-		return fmt.Sprintf("(Tx: %d) ", cd.txDepth)
-	}
-
-	return ""
+	return fmt.Sprintf("<Transaction: %d>", cd.txDepth)
 }
 
 var (
