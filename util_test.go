@@ -19,4 +19,9 @@ func TestCsprint(t *testing.T) {
 	assert.Equal(t, "[]reltest.Book{reltest.Book{}}", csprint([]Book{{}}, true))
 	assert.Equal(t, "[]reltest.Book{reltest.Book{}, reltest.Book{}}", csprint([]Book{{}, {}}, true))
 	assert.Equal(t, "[]reltest.Book{reltest.Book{Title: book}}", csprint([]Book{{Title: "book"}}, true))
+
+	assert.Equal(t, "struct { ID int; hidden bool }{ID: 1}", csprint(struct {
+		ID     int
+		hidden bool
+	}{ID: 1}, true))
 }
