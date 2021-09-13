@@ -523,6 +523,8 @@ func TestMutate_Update_belongsToInconsistentFk(t *testing.T) {
 		}
 	)
 
+	repo.ExpectUpdate(mut).For(&result)
+
 	assert.Equal(t, rel.ConstraintError{
 		Key:  "abstract_id",
 		Type: rel.ForeignKeyConstraint,
@@ -569,6 +571,8 @@ func TestMutate_Update_hasOneInconsistentFk(t *testing.T) {
 		}
 	)
 
+	repo.ExpectUpdate(mut).For(&result)
+
 	assert.Equal(t, rel.ConstraintError{
 		Key:  "book_id",
 		Type: rel.ForeignKeyConstraint,
@@ -593,6 +597,8 @@ func TestMutate_Update_hasManyInconsistentFk(t *testing.T) {
 			},
 		}
 	)
+
+	repo.ExpectUpdate(mut).For(&result)
 
 	assert.Equal(t, rel.ConstraintError{
 		Key:  "book_id",
