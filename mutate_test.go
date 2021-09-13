@@ -212,7 +212,7 @@ func TestInsert_assertForContains(t *testing.T) {
 		repo.Insert(context.TODO(), &Book{Title: "Golang"})
 	})
 	assert.False(t, repo.AssertExpectations(nt))
-	assert.Equal(t, "FAIL: Mock defined but not called:\nInsert(ctx, <Contains: reltest.Book{Title: Go}>)", nt.lastLog)
+	assert.Equal(t, "FAIL: Mock defined but not called:\nInsert(ctx, <Contains: reltest.Book{Title: \"Go\"}>)", nt.lastLog)
 }
 
 func TestInsert_assert_transaction(t *testing.T) {
