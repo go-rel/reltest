@@ -4,8 +4,19 @@ import (
 	"testing"
 
 	"github.com/go-rel/rel"
+	"github.com/go-rel/rel/where"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestMatchFilterQuery_concrete_values(t *testing.T) {
+	assert.True(t, matchFilterQuery(where.InInt("id", []int{1}), where.InInt("id", []int{1})))
+	assert.True(t, matchFilterQuery(where.In("id", 1), where.InInt("id", []int{1})))
+	assert.True(t, matchFilterQuery(where.Eq("id", 1), where.Eq("id", 1)))
+	assert.False(t, matchFilterQuery(where.Eq("id", 1).And(where.Eq("title","book")), where.Eq("id", 1)))
+	assert.False(t, matchFilterQuery(where.InInt("id", []int{1}), where.Eq("id", 1)))
+	assert.False(t, matchFilterQuery(where.Eq("id", "1"), where.Eq("id", 1)))
+	assert.False(t, matchFilterQuery(where.Eq("id", "1"), where.Eq("title", "1")))
+}
 
 func TestMatchContains(t *testing.T) {
 	assert.True(t, matchContains(&Book{ID: 1}, &Book{ID: 1}))
