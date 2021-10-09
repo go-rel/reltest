@@ -36,7 +36,7 @@ func TestAssert_default(t *testing.T) {
 	assert.True(t, a.call(context.TODO()))
 }
 
-func TestAssert_once(t *testing.T) {
+func TestAssert_Once(t *testing.T) {
 	var (
 		a = &Assert{}
 	)
@@ -49,12 +49,12 @@ func TestAssert_once(t *testing.T) {
 	assert.False(t, a.call(context.TODO()))
 }
 
-func TestAssert_times(t *testing.T) {
+func TestAssert_Twice(t *testing.T) {
 	var (
 		a = &Assert{}
 	)
 
-	a.Times(2)
+	a.Twice()
 
 	assert.False(t, a.assert(nt, nil))
 	assert.True(t, a.call(context.TODO()))
@@ -64,7 +64,20 @@ func TestAssert_times(t *testing.T) {
 	assert.False(t, a.call(context.TODO()))
 }
 
-func TestAssert_maybe(t *testing.T) {
+func TestAssert_Many(t *testing.T) {
+	var (
+		a = &Assert{}
+	)
+
+	a.Many()
+
+	assert.False(t, a.assert(nt, nil))
+	assert.True(t, a.call(context.TODO()))
+	assert.True(t, a.assert(nt, nil))
+	assert.True(t, a.call(context.TODO()))
+}
+
+func TestAssert_Maybe(t *testing.T) {
 	var (
 		a = &Assert{}
 	)
