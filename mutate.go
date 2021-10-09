@@ -27,7 +27,7 @@ func (m mutate) execute(name string, ctx context.Context, record interface{}, mu
 			(mm.argRecordType == "" || mm.argRecordType == reflect.TypeOf(record).String()) &&
 			(mm.argRecordTable == "" || mm.argRecordTable == rel.NewDocument(record, true).Table()) &&
 			(mm.argRecordContains == nil || matchContains(mm.argRecordContains, record)) &&
-			matchMutators(mm.argMutators, mutators) &&
+			(len(mm.argMutators) == 0 || matchMutators(mm.argMutators, mutators)) &&
 			mm.assert.call(ctx) {
 			return mm.retError
 		}
