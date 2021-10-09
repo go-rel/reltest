@@ -20,14 +20,27 @@ type Assert struct {
 	optional      bool
 }
 
+// Once set max calls to one time.
 func (a *Assert) Once() {
 	a.Times(1)
 }
 
+// Twice set max calls to two times.
+func (a *Assert) Twice() {
+	a.Times(2)
+}
+
+// Many set max calls to unlimited times.
+func (a *Assert) Many() {
+	a.Times(0)
+}
+
+// Times set number of allowed calls.
 func (a *Assert) Times(times int) {
 	a.repeatability = times
 }
 
+// Maybe allow calls to be skipped.
 func (a *Assert) Maybe() {
 	a.optional = true
 }
