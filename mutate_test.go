@@ -96,6 +96,11 @@ func TestMutate_Insert_set(t *testing.T) {
 		book   = Book{ID: 1, Title: "Rel for dummies"}
 	)
 
+	repo.ExpectInsert()
+	assert.Nil(t, repo.Insert(context.TODO(), &result, rel.Set("title", "Rel for dummies")))
+	assert.Equal(t, book, result)
+	repo.AssertExpectations(t)
+	
 	repo.ExpectInsert(rel.Set("title", "Rel for dummies"))
 	assert.Nil(t, repo.Insert(context.TODO(), &result, rel.Set("title", "Rel for dummies")))
 	assert.Equal(t, book, result)
