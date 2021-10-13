@@ -155,30 +155,3 @@ func TestRepository_Transaction_runtimerError(t *testing.T) {
 
 	repo.AssertExpectations(t)
 }
-
-// func TestRepository_Transaction_error_1(t *testing.T) {
-// 	var (
-// 		repo   = New()
-// 		result = Book{Title: "Golang for dummies"}
-// 		book   = Book{ID: 1, Title: "Golang for dummies"}
-// 	)
-
-// 	repo.ExpectTransaction(func(repo *Repository) {
-// 		repo.ExpectInsert()
-// 		repo.ExpectUpdate()
-// 		repo.ExpectUpdate().ConnectionClosed()
-// 	})
-
-// 	assert.Equal(t, sql.ErrConnDone, repo.Transaction(context.TODO(), func(ctx context.Context) error {
-// 		if err := repo.Insert(ctx, &result); err != nil {
-// 			return err
-// 		}
-// 		if err := repo.Update(ctx, &result); err != nil {
-// 			return err
-// 		}
-// 		return repo.Update(ctx, &result)
-// 	}))
-
-// 	assert.Equal(t, book, result)
-// 	repo.AssertExpectations(t)
-// }
