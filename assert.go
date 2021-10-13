@@ -64,7 +64,7 @@ func (a Assert) assert(t T, mock interface{}) bool {
 	}
 
 	t.Helper()
-	if a.repeatability > 0 {
+	if a.repeatability > 1 {
 		t.Errorf("FAIL: Need to make %d more call(s) to satisfy mock:\n%s", a.repeatability-a.totalCalls, mock)
 	} else {
 		t.Errorf("FAIL: Mock defined but not called:\n%s", mock)

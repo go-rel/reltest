@@ -13,7 +13,7 @@ type mutate []*MockMutate
 
 func (m *mutate) register(name string, ctxData ctxData, mutators ...rel.Mutator) *MockMutate {
 	mm := &MockMutate{
-		assert:      &Assert{ctxData: ctxData},
+		assert:      &Assert{ctxData: ctxData, repeatability: 1},
 		name:        name,
 		argMutators: mutators,
 	}
