@@ -12,7 +12,7 @@ func TestMatchFilterQuery_concrete_values(t *testing.T) {
 	assert.True(t, matchFilterQuery(where.InInt("id", []int{1}), where.InInt("id", []int{1})))
 	assert.True(t, matchFilterQuery(where.In("id", 1), where.InInt("id", []int{1})))
 	assert.True(t, matchFilterQuery(where.Eq("id", 1), where.Eq("id", 1)))
-	assert.False(t, matchFilterQuery(where.Eq("id", 1).And(where.Eq("title","book")), where.Eq("id", 1)))
+	assert.False(t, matchFilterQuery(where.Eq("id", 1).And(where.Eq("title", "book")), where.Eq("id", 1)))
 	assert.False(t, matchFilterQuery(where.InInt("id", []int{1}), where.Eq("id", 1)))
 	assert.False(t, matchFilterQuery(where.Eq("id", "1"), where.Eq("id", 1)))
 	assert.False(t, matchFilterQuery(where.Eq("id", "1"), where.Eq("title", "1")))
