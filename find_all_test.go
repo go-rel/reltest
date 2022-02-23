@@ -34,6 +34,22 @@ func TestFindAll(t *testing.T) {
 	repo.AssertExpectations(t)
 }
 
+func TestFindAll_From(t *testing.T) {
+	var (
+		repo   = New()
+		result []Book
+		books  = []Book{
+			{ID: 1, Title: "Golang for dummies"},
+			{ID: 2, Title: "Rel for dummies"},
+		}
+	)
+
+	repo.ExpectFindAll(rel.From("custom_name")).Result(books)
+	assert.Nil(t, repo.FindAll(context.TODO(), &result, rel.From("custom_name")))
+	assert.Equal(t, books, result)
+	repo.AssertExpectations(t)
+}
+
 func TestFindAll_any(t *testing.T) {
 	var (
 		repo   = New()
