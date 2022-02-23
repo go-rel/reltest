@@ -65,4 +65,11 @@ func TestMatchMutates(t *testing.T) {
 	assert.True(t, matchMutates([]rel.Mutate{rel.Set("a", 1)}, []rel.Mutate{rel.Set("a", 1)}))
 	assert.True(t, matchMutates([]rel.Mutate{rel.Set("a", "a"), rel.Inc("b")}, []rel.Mutate{rel.Set("a", "a"), rel.Inc("b")}))
 	assert.False(t, matchMutates([]rel.Mutate{rel.Set("a", 1)}, []rel.Mutate{rel.Set("a", "1")}))
+	assert.False(t, matchMutates([]rel.Mutate{rel.Set("a", 1)}, []rel.Mutate{rel.Inc("a")}))
+
+	assert.True(t, matchMutates([]rel.Mutate{rel.Set("a", Any)}, []rel.Mutate{rel.Set("a", 1)}))
+	assert.True(t, matchMutates([]rel.Mutate{rel.SetFragment("a", 1, 2)}, []rel.Mutate{rel.SetFragment("a", 1, 2)}))
+	assert.True(t, matchMutates([]rel.Mutate{rel.SetFragment("a", 1, Any)}, []rel.Mutate{rel.SetFragment("a", 1, 2)}))
+	assert.False(t, matchMutates([]rel.Mutate{rel.SetFragment("a", 1, 3)}, []rel.Mutate{rel.SetFragment("a", 1, 2)}))
+	assert.False(t, matchMutates([]rel.Mutate{rel.SetFragment("a", 1)}, []rel.Mutate{rel.SetFragment("a", 1, 2)}))
 }
