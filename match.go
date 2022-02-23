@@ -135,14 +135,14 @@ func matchMutators(mocks []rel.Mutator, inputs []rel.Mutator) bool {
 }
 
 func matchMutate(mock rel.Mutate, input rel.Mutate) bool {
-	if mock.Type != input.Type && mock.Field != input.Field {
+	if mock.Type != input.Type || mock.Field != input.Field {
 		return false
 	}
 
 	if mock.Type == rel.ChangeFragmentOp {
 		var (
 			mockArgs, _  = mock.Value.([]interface{})
-			inputArgs, _ = mock.Value.([]interface{})
+			inputArgs, _ = input.Value.([]interface{})
 		)
 
 		if len(mockArgs) != len(inputArgs) {
