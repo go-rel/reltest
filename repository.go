@@ -169,13 +169,13 @@ func (r *Repository) ExpectInsert(mutators ...rel.Mutator) *MockMutate {
 
 // InsertAll records.
 func (r *Repository) InsertAll(ctx context.Context, records interface{}, mutators ...rel.Mutator) error {
-	r.repo.InsertAll(ctx, records)
+	r.repo.InsertAll(ctx, records, mutators...)
 	return r.insertAll.execute(ctx, records)
 }
 
 // MustInsertAll records.
 func (r *Repository) MustInsertAll(ctx context.Context, records interface{}, mutators ...rel.Mutator) {
-	must(r.InsertAll(ctx, records))
+	must(r.InsertAll(ctx, records, mutators...))
 }
 
 // ExpectInsertAll records.
