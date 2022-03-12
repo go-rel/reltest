@@ -168,13 +168,13 @@ func (r *Repository) ExpectInsert(mutators ...rel.Mutator) *MockMutate {
 }
 
 // InsertAll records.
-func (r *Repository) InsertAll(ctx context.Context, records interface{}) error {
+func (r *Repository) InsertAll(ctx context.Context, records interface{}, mutators ...rel.Mutator) error {
 	r.repo.InsertAll(ctx, records)
 	return r.insertAll.execute(ctx, records)
 }
 
 // MustInsertAll records.
-func (r *Repository) MustInsertAll(ctx context.Context, records interface{}) {
+func (r *Repository) MustInsertAll(ctx context.Context, records interface{}, mutators ...rel.Mutator) {
 	must(r.InsertAll(ctx, records))
 }
 
