@@ -132,6 +132,30 @@ func TestFindAll_join(t *testing.T) {
 	repo.AssertExpectations(t)
 }
 
+func TestFindAll_joinAssoc(t *testing.T) {
+	var (
+		repo   = New()
+		result []Book
+		books  = []Book{}
+	)
+
+	repo.ExpectFindAll(rel.Select("*", "poster.*"), where.Eq("tags.name", "Education"), join.Assoc("poster")).Result(books)
+	assert.Nil(t, repo.FindAll(context.TODO(), &result, rel.Select("*", "poster.*"), where.Eq("tags.name", "Education"), join.Assoc("poster")))
+	assert.Equal(t, books, result)
+
+	// not match
+	assert.Panics(t, func() {
+		repo.FindAll(context.TODO(), &result, rel.Select("*", "poster.*"), where.Eq("tags.name", "Education"), join.Assoc("poster"))
+	})
+
+	// not match
+	assert.Panics(t, func() {
+		repo.FindAll(context.TODO(), &result, rel.Select("*", "poster.*"), where.Eq("tags.name", "Education"), join.Assoc("author"))
+	})
+
+	repo.AssertExpectations(t)
+}
+
 func TestFindAll_subquery(t *testing.T) {
 	var (
 		repo   = New()
