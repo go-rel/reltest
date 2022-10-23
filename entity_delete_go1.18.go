@@ -8,7 +8,7 @@ type EntityMockDelete[T any] struct {
 	*MockDelete
 }
 
-// For assert calls for given record.
+// For assert calls for given entity.
 func (emd *EntityMockDelete[T]) For(result *T) *EntityMockDelete[T] {
 	emd.MockDelete.For(result)
 	return emd

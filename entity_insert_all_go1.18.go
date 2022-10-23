@@ -8,7 +8,7 @@ type EntityMockInsertAll[T any] struct {
 	*MockInsertAll
 }
 
-// For assert calls for given record.
+// For assert calls for given entity.
 func (emia *EntityMockInsertAll[T]) For(result *[]T) *EntityMockInsertAll[T] {
 	emia.MockInsertAll.For(result)
 	return emia

@@ -18,13 +18,13 @@ func (fa *findAll) register(ctxData ctxData, queriers ...rel.Querier) *MockFindA
 	return mfa
 }
 
-func (fa findAll) execute(ctx context.Context, records any, queriers ...rel.Querier) error {
+func (fa findAll) execute(ctx context.Context, entities any, queriers ...rel.Querier) error {
 	query := rel.Build("", queriers...)
 	for _, mfa := range fa {
 		if matchQuery(mfa.argQuery, query) &&
 			mfa.assert.call(ctx) {
-			if mfa.argRecords != nil {
-				reflect.ValueOf(records).Elem().Set(reflect.ValueOf(mfa.argRecords))
+			if mfa.argEntities != nil {
+				reflect.ValueOf(entities).Elem().Set(reflect.ValueOf(mfa.argEntities))
 			}
 
 			return mfa.retError
@@ -32,9 +32,9 @@ func (fa findAll) execute(ctx context.Context, records any, queriers ...rel.Quer
 	}
 
 	mfa := &MockFindAll{
-		assert:     &Assert{ctxData: fetchContext(ctx)},
-		argQuery:   query,
-		argRecords: records,
+		assert:      &Assert{ctxData: fetchContext(ctx)},
+		argQuery:    query,
+		argEntities: entities,
 	}
 	panic(failExecuteMessage(mfa, fa))
 }
@@ -53,10 +53,10 @@ func (fa *findAll) assert(t TestingT) bool {
 
 // MockFindAll asserts and simulate find all function for test.
 type MockFindAll struct {
-	assert     *Assert
-	argQuery   rel.Query
-	argRecords any
-	retError   error
+	assert      *Assert
+	argQuery    rel.Query
+	argEntities any
+	retError    error
 }
 
 // Result sets the result of this query.
@@ -64,7 +64,7 @@ func (mfa *MockFindAll) Result(result any) *Assert {
 	if mfa.argQuery.Table == "" {
 		mfa.argQuery.Table = rel.NewCollection(result, true).Table()
 	}
-	mfa.argRecords = result
+	mfa.argEntities = result
 	return mfa.assert
 }
 

@@ -8,7 +8,7 @@ type EntityMockPreloadAll[T any] struct {
 	*MockPreload
 }
 
-// For assert calls for given record.
+// For assert calls for given entity.
 func (empa *EntityMockPreloadAll[T]) For(result *[]T) *EntityMockPreloadAll[T] {
 	empa.MockPreload.For(result)
 	return empa

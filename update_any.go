@@ -29,7 +29,7 @@ func (ua updateAny) execute(ctx context.Context, query rel.Query, mutates ...rel
 			}
 
 			if !mua.unsafe && query.WhereQuery.None() {
-				panic("reltest: unsafe UpdateAny detected. if you want to mutate all records without filter, please use call .Unsafe()")
+				panic("reltest: unsafe UpdateAny detected. if you want to mutate all entities without filter, please use call .Unsafe()")
 			}
 
 			return mua.retUpdatedCount, mua.retError
@@ -66,7 +66,7 @@ type MockUpdateAny struct {
 	retError        error
 }
 
-// Unsafe allows for unsafe operation to delete records without where condition.
+// Unsafe allows for unsafe operation to delete entities without where condition.
 func (mua *MockUpdateAny) Unsafe() *MockUpdateAny {
 	mua.unsafe = true
 	return mua

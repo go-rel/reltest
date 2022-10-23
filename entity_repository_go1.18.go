@@ -50,7 +50,7 @@ func (er *EntityRepository[T]) ExpectInsert(mutators ...rel.Mutator) *EntityMock
 	return &EntityMockMutate[T]{er.mock.ExpectInsert(mutators...)}
 }
 
-// ExpectInsertAll records.
+// ExpectInsertAll entities.
 func (er *EntityRepository[T]) ExpectInsertAll() *EntityMockInsertAll[T] {
 	return &EntityMockInsertAll[T]{er.mock.ExpectInsertAll()}
 }
