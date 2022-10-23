@@ -21,7 +21,7 @@ func (p *preload) register(ctxData ctxData, field string, queriers ...rel.Querie
 	return mp
 }
 
-func (p preload) execute(ctx context.Context, records interface{}, field string, queriers ...rel.Querier) error {
+func (p preload) execute(ctx context.Context, records any, field string, queriers ...rel.Querier) error {
 	query := rel.Build("", queriers...)
 	for _, mp := range p {
 		if (mp.argRecords == nil || reflect.DeepEqual(mp.argRecords, records)) &&
@@ -67,8 +67,8 @@ func (p *preload) assert(t TestingT) bool {
 // MockPreload asserts and simulate Delete function for test.
 type MockPreload struct {
 	assert         *Assert
-	result         interface{}
-	argRecords     interface{}
+	result         any
+	argRecords     any
 	argRecordsType string
 	argField       string
 	argQuery       rel.Query
@@ -76,7 +76,7 @@ type MockPreload struct {
 }
 
 // For assert calls for given record.
-func (md *MockPreload) For(records interface{}) *MockPreload {
+func (md *MockPreload) For(records any) *MockPreload {
 	md.argRecords = records
 	return md
 }
@@ -89,7 +89,7 @@ func (md *MockPreload) ForType(typ string) *MockPreload {
 }
 
 // Result sets the result of preload.
-func (mp *MockPreload) Result(result interface{}) *Assert {
+func (mp *MockPreload) Result(result any) *Assert {
 	mp.result = result
 	return mp.assert
 }
@@ -137,7 +137,7 @@ type slice interface {
 	Len() int
 }
 
-func asSlice(v interface{}, readonly bool) slice {
+func asSlice(v any, readonly bool) slice {
 	var (
 		sl slice
 		rt = reflect.TypeOf(v)
@@ -163,7 +163,7 @@ func execPreload(target slice, result slice, path []string) {
 	}
 
 	var (
-		mappedResult map[interface{}]reflect.Value
+		mappedResult map[any]reflect.Value
 		stack        = make([]frame, target.Len())
 	)
 
@@ -237,9 +237,9 @@ func execPreload(target slice, result slice, path []string) {
 	}
 }
 
-func mapResult(result slice, fField string, hasMany bool) map[interface{}]reflect.Value {
+func mapResult(result slice, fField string, hasMany bool) map[any]reflect.Value {
 	var (
-		mapResult = make(map[interface{}]reflect.Value)
+		mapResult = make(map[any]reflect.Value)
 	)
 
 	for i := 0; i < result.Len(); i++ {

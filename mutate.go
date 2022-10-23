@@ -21,7 +21,7 @@ func (m *mutate) register(name string, ctxData ctxData, mutators ...rel.Mutator)
 	return mm
 }
 
-func (m mutate) execute(name string, ctx context.Context, record interface{}, mutators ...rel.Mutator) error {
+func (m mutate) execute(name string, ctx context.Context, record any, mutators ...rel.Mutator) error {
 	for _, mm := range m {
 		if (mm.argRecord == nil || reflect.DeepEqual(mm.argRecord, record)) &&
 			(mm.argRecordType == "" || mm.argRecordType == reflect.TypeOf(record).String()) &&
@@ -58,16 +58,16 @@ func (m *mutate) assert(t TestingT) bool {
 type MockMutate struct {
 	assert            *Assert
 	name              string
-	argRecord         interface{}
+	argRecord         any
 	argRecordType     string
 	argRecordTable    string
-	argRecordContains interface{}
+	argRecordContains any
 	argMutators       []rel.Mutator
 	retError          error
 }
 
 // For assert calls for given record.
-func (mm *MockMutate) For(record interface{}) *MockMutate {
+func (mm *MockMutate) For(record any) *MockMutate {
 	mm.argRecord = record
 	return mm
 }
@@ -86,7 +86,7 @@ func (mm *MockMutate) ForTable(typ string) *MockMutate {
 }
 
 // ForContains assert calls to contains some value of given struct.
-func (mm *MockMutate) ForContains(contains interface{}) *MockMutate {
+func (mm *MockMutate) ForContains(contains any) *MockMutate {
 	mm.argRecordContains = contains
 	return mm
 }

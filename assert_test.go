@@ -12,11 +12,11 @@ type noopt struct {
 	lastLog string
 }
 
-func (t *noopt) Logf(format string, args ...interface{}) {
+func (t *noopt) Logf(format string, args ...any) {
 	t.lastLog = fmt.Sprintf(format, args...)
 }
 
-func (t *noopt) Errorf(format string, args ...interface{}) {
+func (t *noopt) Errorf(format string, args ...any) {
 	t.lastLog = fmt.Sprintf(format, args...)
 }
 

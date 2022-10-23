@@ -66,7 +66,7 @@ type MockIterate struct {
 }
 
 // Result sets the result of preload.
-func (mi *MockIterate) Result(result interface{}) *Assert {
+func (mi *MockIterate) Result(result any) *Assert {
 	rt := reflect.TypeOf(result)
 	if rt.Kind() == reflect.Ptr {
 		rt = rt.Elem()
@@ -97,7 +97,7 @@ func (mi MockIterate) Close() error {
 }
 
 // Next return next entity in iterator.
-func (mi *MockIterate) Next(entity interface{}) error {
+func (mi *MockIterate) Next(entity any) error {
 	if mi.err != nil {
 		return mi.err
 	}

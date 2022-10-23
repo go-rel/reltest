@@ -18,7 +18,7 @@ func (fca *findAndCountAll) register(ctxData ctxData, queriers ...rel.Querier) *
 	return mfca
 }
 
-func (fca findAndCountAll) execute(ctx context.Context, records interface{}, queriers ...rel.Querier) (int, error) {
+func (fca findAndCountAll) execute(ctx context.Context, records any, queriers ...rel.Querier) (int, error) {
 	query := rel.Build("", queriers...)
 	for _, mfca := range fca {
 		if matchQuery(mfca.argQuery, query) &&
@@ -55,13 +55,13 @@ func (fca *findAndCountAll) assert(t TestingT) bool {
 type MockFindAndCountAll struct {
 	assert     *Assert
 	argQuery   rel.Query
-	argRecords interface{}
+	argRecords any
 	retCount   int
 	retError   error
 }
 
 // Result sets the result of this query.
-func (mfca *MockFindAndCountAll) Result(result interface{}, count int) *Assert {
+func (mfca *MockFindAndCountAll) Result(result any, count int) *Assert {
 	if mfca.argQuery.Table == "" {
 		mfca.argQuery.Table = rel.NewCollection(result, true).Table()
 	}

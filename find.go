@@ -18,7 +18,7 @@ func (f *find) register(ctxData ctxData, queriers ...rel.Querier) *MockFind {
 	return mf
 }
 
-func (f find) execute(ctx context.Context, record interface{}, queriers ...rel.Querier) error {
+func (f find) execute(ctx context.Context, record any, queriers ...rel.Querier) error {
 	query := rel.Build("", queriers...)
 	for _, mf := range f {
 		if matchQuery(mf.argQuery, query) &&
@@ -55,12 +55,12 @@ func (f *find) assert(t TestingT) bool {
 type MockFind struct {
 	assert    *Assert
 	argQuery  rel.Query
-	argRecord interface{}
+	argRecord any
 	retError  error
 }
 
 // Result sets the result of this query.
-func (mf *MockFind) Result(result interface{}) *Assert {
+func (mf *MockFind) Result(result any) *Assert {
 	if mf.argQuery.Table == "" {
 		mf.argQuery.Table = rel.NewDocument(result, true).Table()
 	}

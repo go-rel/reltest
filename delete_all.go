@@ -19,7 +19,7 @@ func (da *deleteAll) register(ctxData ctxData) *MockDeleteAll {
 	return mda
 }
 
-func (da deleteAll) execute(ctx context.Context, record interface{}) error {
+func (da deleteAll) execute(ctx context.Context, record any) error {
 	for _, mda := range da {
 		if (mda.argRecord == nil || reflect.DeepEqual(mda.argRecord, record)) &&
 			(mda.argRecordType == "" || mda.argRecordType == reflect.TypeOf(record).String()) &&
@@ -51,14 +51,14 @@ func (da *deleteAll) assert(t TestingT) bool {
 // MockDeleteAll asserts and simulate Delete function for test.
 type MockDeleteAll struct {
 	assert         *Assert
-	argRecord      interface{}
+	argRecord      any
 	argRecordType  string
 	argRecordTable string
 	retError       error
 }
 
 // For assert calls for given record.
-func (mda *MockDeleteAll) For(record interface{}) *MockDeleteAll {
+func (mda *MockDeleteAll) For(record any) *MockDeleteAll {
 	mda.argRecord = record
 	return mda
 }

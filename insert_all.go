@@ -19,7 +19,7 @@ func (ia *insertAll) register(ctxData ctxData) *MockInsertAll {
 	return mia
 }
 
-func (ia insertAll) execute(ctx context.Context, records interface{}) error {
+func (ia insertAll) execute(ctx context.Context, records any) error {
 	for _, mia := range ia {
 		if (mia.argRecord == nil || reflect.DeepEqual(mia.argRecord, records)) &&
 			(mia.argRecordType == "" || mia.argRecordType == reflect.TypeOf(records).String()) &&
@@ -51,14 +51,14 @@ func (ia *insertAll) assert(t TestingT) bool {
 // MockInsertAll asserts and simulate Insert function for test.
 type MockInsertAll struct {
 	assert         *Assert
-	argRecord      interface{}
+	argRecord      any
 	argRecordType  string
 	argRecordTable string
 	retError       error
 }
 
 // For assert calls for given record.
-func (mia *MockInsertAll) For(record interface{}) *MockInsertAll {
+func (mia *MockInsertAll) For(record any) *MockInsertAll {
 	mia.argRecord = record
 	return mia
 }

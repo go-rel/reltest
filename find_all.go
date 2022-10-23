@@ -18,7 +18,7 @@ func (fa *findAll) register(ctxData ctxData, queriers ...rel.Querier) *MockFindA
 	return mfa
 }
 
-func (fa findAll) execute(ctx context.Context, records interface{}, queriers ...rel.Querier) error {
+func (fa findAll) execute(ctx context.Context, records any, queriers ...rel.Querier) error {
 	query := rel.Build("", queriers...)
 	for _, mfa := range fa {
 		if matchQuery(mfa.argQuery, query) &&
@@ -55,12 +55,12 @@ func (fa *findAll) assert(t TestingT) bool {
 type MockFindAll struct {
 	assert     *Assert
 	argQuery   rel.Query
-	argRecords interface{}
+	argRecords any
 	retError   error
 }
 
 // Result sets the result of this query.
-func (mfa *MockFindAll) Result(result interface{}) *Assert {
+func (mfa *MockFindAll) Result(result any) *Assert {
 	if mfa.argQuery.Table == "" {
 		mfa.argQuery.Table = rel.NewCollection(result, true).Table()
 	}

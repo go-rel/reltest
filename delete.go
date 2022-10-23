@@ -20,7 +20,7 @@ func (d *delete) register(ctxData ctxData, mutators ...rel.Mutator) *MockDelete 
 	return md
 }
 
-func (d delete) execute(ctx context.Context, record interface{}, mutators ...rel.Mutator) error {
+func (d delete) execute(ctx context.Context, record any, mutators ...rel.Mutator) error {
 	for _, md := range d {
 		if (md.argRecord == nil || reflect.DeepEqual(md.argRecord, record)) &&
 			(md.argRecordType == "" || md.argRecordType == reflect.TypeOf(record).String()) &&
@@ -56,16 +56,16 @@ func (d *delete) assert(t TestingT) bool {
 // MockDelete asserts and simulate Delete function for test.
 type MockDelete struct {
 	assert            *Assert
-	argRecord         interface{}
+	argRecord         any
 	argRecordType     string
 	argRecordTable    string
-	argRecordContains interface{}
+	argRecordContains any
 	argMutators       []rel.Mutator
 	retError          error
 }
 
 // For assert calls for given record.
-func (md *MockDelete) For(record interface{}) *MockDelete {
+func (md *MockDelete) For(record any) *MockDelete {
 	md.argRecord = record
 	return md
 }
@@ -84,7 +84,7 @@ func (md *MockDelete) ForTable(typ string) *MockDelete {
 }
 
 // ForContains assert calls to contains some value of given struct.
-func (md *MockDelete) ForContains(contains interface{}) *MockDelete {
+func (md *MockDelete) ForContains(contains any) *MockDelete {
 	md.argRecordContains = contains
 	return md
 }

@@ -101,13 +101,13 @@ func (r *Repository) ExpectCount(collection string, queriers ...rel.Querier) *Mo
 }
 
 // Find provides a mock function with given fields: record, queriers
-func (r *Repository) Find(ctx context.Context, record interface{}, queriers ...rel.Querier) error {
+func (r *Repository) Find(ctx context.Context, record any, queriers ...rel.Querier) error {
 	r.repo.Find(ctx, record, queriers...)
 	return r.find.execute(ctx, record, queriers...)
 }
 
 // MustFind provides a mock function with given fields: record, queriers
-func (r *Repository) MustFind(ctx context.Context, record interface{}, queriers ...rel.Querier) {
+func (r *Repository) MustFind(ctx context.Context, record any, queriers ...rel.Querier) {
 	must(r.Find(ctx, record, queriers...))
 }
 
@@ -117,13 +117,13 @@ func (r *Repository) ExpectFind(queriers ...rel.Querier) *MockFind {
 }
 
 // FindAll provides a mock function with given fields: records, queriers
-func (r *Repository) FindAll(ctx context.Context, records interface{}, queriers ...rel.Querier) error {
+func (r *Repository) FindAll(ctx context.Context, records any, queriers ...rel.Querier) error {
 	r.repo.FindAll(ctx, records, queriers...)
 	return r.findAll.execute(ctx, records, queriers...)
 }
 
 // MustFindAll provides a mock function with given fields: records, queriers
-func (r *Repository) MustFindAll(ctx context.Context, records interface{}, queriers ...rel.Querier) {
+func (r *Repository) MustFindAll(ctx context.Context, records any, queriers ...rel.Querier) {
 	must(r.FindAll(ctx, records, queriers...))
 }
 
@@ -133,13 +133,13 @@ func (r *Repository) ExpectFindAll(queriers ...rel.Querier) *MockFindAll {
 }
 
 // FindAndCountAll provides a mock function with given fields: records, queriers
-func (r *Repository) FindAndCountAll(ctx context.Context, records interface{}, queriers ...rel.Querier) (int, error) {
+func (r *Repository) FindAndCountAll(ctx context.Context, records any, queriers ...rel.Querier) (int, error) {
 	r.repo.FindAndCountAll(ctx, records, queriers...)
 	return r.findAndCountAll.execute(ctx, records, queriers...)
 }
 
 // MustFindAndCountAll provides a mock function with given fields: records, queriers
-func (r *Repository) MustFindAndCountAll(ctx context.Context, records interface{}, queriers ...rel.Querier) int {
+func (r *Repository) MustFindAndCountAll(ctx context.Context, records any, queriers ...rel.Querier) int {
 	count, err := r.FindAndCountAll(ctx, records, queriers...)
 	must(err)
 	return count
@@ -151,14 +151,14 @@ func (r *Repository) ExpectFindAndCountAll(queriers ...rel.Querier) *MockFindAnd
 }
 
 // Insert provides a mock function with given fields: record, mutators
-func (r *Repository) Insert(ctx context.Context, record interface{}, mutators ...rel.Mutator) error {
+func (r *Repository) Insert(ctx context.Context, record any, mutators ...rel.Mutator) error {
 	ret := r.insert.execute("Insert", ctx, record, mutators...)
 	r.repo.Insert(ctx, record, mutators...)
 	return ret
 }
 
 // MustInsert provides a mock function with given fields: record, mutators
-func (r *Repository) MustInsert(ctx context.Context, record interface{}, mutators ...rel.Mutator) {
+func (r *Repository) MustInsert(ctx context.Context, record any, mutators ...rel.Mutator) {
 	must(r.Insert(ctx, record, mutators...))
 }
 
@@ -168,13 +168,13 @@ func (r *Repository) ExpectInsert(mutators ...rel.Mutator) *MockMutate {
 }
 
 // InsertAll records.
-func (r *Repository) InsertAll(ctx context.Context, records interface{}, mutators ...rel.Mutator) error {
+func (r *Repository) InsertAll(ctx context.Context, records any, mutators ...rel.Mutator) error {
 	r.repo.InsertAll(ctx, records, mutators...)
 	return r.insertAll.execute(ctx, records)
 }
 
 // MustInsertAll records.
-func (r *Repository) MustInsertAll(ctx context.Context, records interface{}, mutators ...rel.Mutator) {
+func (r *Repository) MustInsertAll(ctx context.Context, records any, mutators ...rel.Mutator) {
 	must(r.InsertAll(ctx, records, mutators...))
 }
 
@@ -184,7 +184,7 @@ func (r *Repository) ExpectInsertAll() *MockInsertAll {
 }
 
 // Update provides a mock function with given fields: record, mutators
-func (r *Repository) Update(ctx context.Context, record interface{}, mutators ...rel.Mutator) error {
+func (r *Repository) Update(ctx context.Context, record any, mutators ...rel.Mutator) error {
 	ret := r.update.execute("Update", ctx, record, mutators...)
 	if err := r.repo.Update(ctx, record, mutators...); err != nil {
 		return err
@@ -194,7 +194,7 @@ func (r *Repository) Update(ctx context.Context, record interface{}, mutators ..
 }
 
 // MustUpdate provides a mock function with given fields: record, mutators
-func (r *Repository) MustUpdate(ctx context.Context, record interface{}, mutators ...rel.Mutator) {
+func (r *Repository) MustUpdate(ctx context.Context, record any, mutators ...rel.Mutator) {
 	must(r.Update(ctx, record, mutators...))
 }
 
@@ -222,13 +222,13 @@ func (r *Repository) ExpectUpdateAny(query rel.Query, mutates ...rel.Mutate) *Mo
 }
 
 // Delete provides a mock function with given fields: record
-func (r *Repository) Delete(ctx context.Context, record interface{}, options ...rel.Mutator) error {
+func (r *Repository) Delete(ctx context.Context, record any, options ...rel.Mutator) error {
 	r.repo.Delete(ctx, record)
 	return r.delete.execute(ctx, record, options...)
 }
 
 // MustDelete provides a mock function with given fields: record
-func (r *Repository) MustDelete(ctx context.Context, record interface{}, options ...rel.Mutator) {
+func (r *Repository) MustDelete(ctx context.Context, record any, options ...rel.Mutator) {
 	must(r.Delete(ctx, record, options...))
 }
 
@@ -238,13 +238,13 @@ func (r *Repository) ExpectDelete(options ...rel.Mutator) *MockDelete {
 }
 
 // DeleteAll provides DeleteAll mock function with given fields: records
-func (r *Repository) DeleteAll(ctx context.Context, records interface{}) error {
+func (r *Repository) DeleteAll(ctx context.Context, records any) error {
 	r.repo.DeleteAll(ctx, records)
 	return r.deleteAll.execute(ctx, records)
 }
 
 // MustDeleteAll provides a mock function with given fields: record
-func (r *Repository) MustDeleteAll(ctx context.Context, record interface{}) {
+func (r *Repository) MustDeleteAll(ctx context.Context, record any) {
 	must(r.DeleteAll(ctx, record))
 }
 
@@ -272,12 +272,12 @@ func (r *Repository) ExpectDeleteAny(query rel.Query) *MockDeleteAny {
 }
 
 // Preload provides a mock function with given fields: records, field, queriers
-func (r *Repository) Preload(ctx context.Context, records interface{}, field string, queriers ...rel.Querier) error {
+func (r *Repository) Preload(ctx context.Context, records any, field string, queriers ...rel.Querier) error {
 	return r.preload.execute(ctx, records, field, queriers...)
 }
 
 // MustPreload provides a mock function with given fields: records, field, queriers
-func (r *Repository) MustPreload(ctx context.Context, records interface{}, field string, queriers ...rel.Querier) {
+func (r *Repository) MustPreload(ctx context.Context, records any, field string, queriers ...rel.Querier) {
 	must(r.Preload(ctx, records, field, queriers...))
 }
 
@@ -288,20 +288,20 @@ func (r *Repository) ExpectPreload(field string, queriers ...rel.Querier) *MockP
 
 // Exec raw statement.
 // Returns last inserted id, rows affected and error.
-func (r *Repository) Exec(ctx context.Context, statement string, args ...interface{}) (int, int, error) {
+func (r *Repository) Exec(ctx context.Context, statement string, args ...any) (int, int, error) {
 	return r.exec.execute(ctx, statement, args)
 }
 
 // MustExec raw statement.
 // Returns last inserted id, rows affected and error.
-func (r *Repository) MustExec(ctx context.Context, statement string, args ...interface{}) (int, int) {
+func (r *Repository) MustExec(ctx context.Context, statement string, args ...any) (int, int) {
 	lastInsertedId, rowsAffected, err := r.Exec(ctx, statement, args...)
 	must(err)
 	return lastInsertedId, rowsAffected
 }
 
 // ExpectExec for mocking Exec
-func (r *Repository) ExpectExec(statement string, args ...interface{}) *MockExec {
+func (r *Repository) ExpectExec(statement string, args ...any) *MockExec {
 	return r.exec.register(r.ctxData, statement, args...)
 }
 
