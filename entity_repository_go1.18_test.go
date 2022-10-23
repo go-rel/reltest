@@ -58,16 +58,16 @@ func TestEntityRepository_Transaction(t *testing.T) {
 		book   = Book{ID: 1, Title: "Golang for dummies", Ratings: []Rating{}}
 	)
 
-	repo.ExpectTransaction(func(repo *Repository) {
+	repo.ExpectTransaction(func(txRepo *Repository) {
 		repo.ExpectInsert()
 
-		repo.ExpectTransaction(func(repo *Repository) {
-			bookRepo := ToEntityRepository[Book](repo)
-			bookRepo.ExpectFind(where.Eq("id", 1)).Result(book)
+		repo.ExpectTransaction(func(txRepo *Repository) {
+			repo := repo.WrapTransaction(txRepo)
+			repo.ExpectFind(where.Eq("id", 1)).Result(book)
 
-			repo.ExpectTransaction(func(repo *Repository) {
-				bookRepo := ToEntityRepository[Book](repo)
-				bookRepo.ExpectDelete()
+			repo.ExpectTransaction(func(txRepo *Repository) {
+				repo := repo.WrapTransaction(txRepo)
+				repo.ExpectDelete()
 			})
 		})
 	})

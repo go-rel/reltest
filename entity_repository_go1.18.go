@@ -91,6 +91,11 @@ func (er *EntityRepository[T]) AssertExpectations(t TestingT) bool {
 	return er.mock.AssertExpectations(t)
 }
 
+// WrapTransaction repository
+func (er *EntityRepository[T]) WrapTransaction(repository *Repository) *EntityRepository[T] {
+	return toEntityRepository[T](repository)
+}
+
 func NewEntityRepository[T any]() *EntityRepository[T] {
 	repository := New()
 	return &EntityRepository[T]{
@@ -99,7 +104,7 @@ func NewEntityRepository[T any]() *EntityRepository[T] {
 	}
 }
 
-func ToEntityRepository[T any](repository *Repository) *EntityRepository[T] {
+func toEntityRepository[T any](repository *Repository) *EntityRepository[T] {
 	return &EntityRepository[T]{
 		EntityRepository: rel.NewEntityRepository[T](repository),
 		mock:             repository,
