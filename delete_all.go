@@ -36,7 +36,7 @@ func (da deleteAll) execute(ctx context.Context, record interface{}) error {
 	panic(failExecuteMessage(mda, da))
 }
 
-func (da *deleteAll) assert(t T) bool {
+func (da *deleteAll) assert(t TestingT) bool {
 	t.Helper()
 	for _, mda := range *da {
 		if !mda.assert.assert(t, mda) {

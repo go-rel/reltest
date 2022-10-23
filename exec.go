@@ -35,7 +35,7 @@ func (e exec) execute(ctx context.Context, statement string, args ...interface{}
 	panic(failExecuteMessage(me, e))
 }
 
-func (e *exec) assert(t T) bool {
+func (e *exec) assert(t TestingT) bool {
 	t.Helper()
 	for _, me := range *e {
 		if !me.assert.assert(t, me) {

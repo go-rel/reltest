@@ -6,8 +6,8 @@ import (
 	"reflect"
 )
 
-// T is an interface wrapper around *testing.T
-type T interface {
+// TestingT is an interface wrapper around *testing.T
+type TestingT interface {
 	Logf(format string, args ...interface{})
 	Errorf(format string, args ...interface{})
 	Helper()
@@ -56,7 +56,7 @@ func (a *Assert) call(ctx context.Context) bool {
 	return true
 }
 
-func (a Assert) assert(t T, mock interface{}) bool {
+func (a Assert) assert(t TestingT, mock interface{}) bool {
 	if a.optional ||
 		(a.repeatability == 0 && a.totalCalls > 0) ||
 		(a.repeatability != 0 && a.totalCalls >= a.repeatability) {

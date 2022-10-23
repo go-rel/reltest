@@ -40,7 +40,7 @@ func (da deleteAny) execute(ctx context.Context, query rel.Query) (int, error) {
 	panic(failExecuteMessage(mda, da))
 }
 
-func (da *deleteAny) assert(t T) bool {
+func (da *deleteAny) assert(t TestingT) bool {
 	t.Helper()
 	for _, mda := range *da {
 		if !mda.assert.assert(t, mda) {

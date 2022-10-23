@@ -6,13 +6,13 @@ import (
 	"github.com/go-rel/rel"
 )
 
-type any struct{}
+type anyValue struct{}
 
-func (any) String() string {
+func (anyValue) String() string {
 	return "<Any>"
 }
 
-var Any interface{} = any{}
+var Any interface{} = anyValue{}
 
 func matchQuery(mock rel.Query, input rel.Query) bool {
 	return matchTable(mock.Table, input.Table) &&

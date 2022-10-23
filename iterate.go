@@ -38,7 +38,7 @@ func (i iterate) execute(ctx context.Context, query rel.Query, options ...rel.It
 	panic(failExecuteMessage(mi, i))
 }
 
-func (i *iterate) assert(t T) bool {
+func (i *iterate) assert(t TestingT) bool {
 	t.Helper()
 	for _, mi := range *i {
 		if !mi.assert.assert(t, mi) {
@@ -91,11 +91,13 @@ func (mi *MockIterate) ConnectionClosed() *Assert {
 	return mi.Error(ErrConnectionClosed)
 }
 
+// Close iterator.
 func (mi MockIterate) Close() error {
 	return nil
 }
 
-func (mi *MockIterate) Next(record interface{}) error {
+// Next return next entity in iterator.
+func (mi *MockIterate) Next(entity interface{}) error {
 	if mi.err != nil {
 		return mi.err
 	}
@@ -108,7 +110,7 @@ func (mi *MockIterate) Next(record interface{}) error {
 		doc = mi.result.Get(mi.current)
 	)
 
-	reflect.ValueOf(record).Elem().Set(doc.ReflectValue())
+	reflect.ValueOf(entity).Elem().Set(doc.ReflectValue())
 
 	mi.current++
 	return nil

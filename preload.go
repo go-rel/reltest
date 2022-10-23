@@ -52,7 +52,7 @@ func (p preload) execute(ctx context.Context, records interface{}, field string,
 	panic(failExecuteMessage(mp, p))
 }
 
-func (p *preload) assert(t T) bool {
+func (p *preload) assert(t TestingT) bool {
 	t.Helper()
 	for _, mp := range *p {
 		if !mp.assert.assert(t, mp) {

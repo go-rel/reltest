@@ -42,7 +42,7 @@ func (m mutate) execute(name string, ctx context.Context, record interface{}, mu
 	panic(failExecuteMessage(mm, m))
 }
 
-func (m *mutate) assert(t T) bool {
+func (m *mutate) assert(t TestingT) bool {
 	t.Helper()
 	for _, mm := range *m {
 		if !mm.assert.assert(t, mm) {

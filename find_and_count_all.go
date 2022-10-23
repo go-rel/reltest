@@ -39,7 +39,7 @@ func (fca findAndCountAll) execute(ctx context.Context, records interface{}, que
 	panic(failExecuteMessage(mfca, fca))
 }
 
-func (fca *findAndCountAll) assert(t T) bool {
+func (fca *findAndCountAll) assert(t TestingT) bool {
 	t.Helper()
 	for _, mfca := range *fca {
 		if !mfca.assert.assert(t, mfca) {

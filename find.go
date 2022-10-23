@@ -39,7 +39,7 @@ func (f find) execute(ctx context.Context, record interface{}, queriers ...rel.Q
 	panic(failExecuteMessage(mf, f))
 }
 
-func (f *find) assert(t T) bool {
+func (f *find) assert(t TestingT) bool {
 	t.Helper()
 	for _, mf := range *f {
 		if !mf.assert.assert(t, mf) {

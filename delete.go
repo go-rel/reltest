@@ -41,7 +41,7 @@ func (d delete) execute(ctx context.Context, record interface{}, mutators ...rel
 	panic(failExecuteMessage(md, d))
 }
 
-func (d *delete) assert(t T) bool {
+func (d *delete) assert(t TestingT) bool {
 	t.Helper()
 	for _, md := range *d {
 		if !md.assert.assert(t, md) {

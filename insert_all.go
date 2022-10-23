@@ -36,7 +36,7 @@ func (ia insertAll) execute(ctx context.Context, records interface{}) error {
 	panic(failExecuteMessage(mia, ia))
 }
 
-func (ia *insertAll) assert(t T) bool {
+func (ia *insertAll) assert(t TestingT) bool {
 	t.Helper()
 	for _, mia := range *ia {
 		if !mia.assert.assert(t, mia) {

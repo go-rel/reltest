@@ -44,7 +44,7 @@ func (ua updateAny) execute(ctx context.Context, query rel.Query, mutates ...rel
 	panic(failExecuteMessage(mua, ua))
 }
 
-func (ua *updateAny) assert(t T) bool {
+func (ua *updateAny) assert(t TestingT) bool {
 	t.Helper()
 	for _, mua := range *ua {
 		if !mua.assert.assert(t, mua) {

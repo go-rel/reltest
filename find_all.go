@@ -39,7 +39,7 @@ func (fa findAll) execute(ctx context.Context, records interface{}, queriers ...
 	panic(failExecuteMessage(mfa, fa))
 }
 
-func (fa *findAll) assert(t T) bool {
+func (fa *findAll) assert(t TestingT) bool {
 	t.Helper()
 	for _, mfa := range *fa {
 		if !mfa.assert.assert(t, mfa) {
