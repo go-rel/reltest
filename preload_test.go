@@ -235,7 +235,7 @@ func TestPreload_assert_transaction(t *testing.T) {
 
 func TestPreload_String(t *testing.T) {
 	var (
-		mockPreload = MockPreload{assert: &Assert{}, argRecords: &Book{ID: 1}, argField: "users", argQuery: rel.Build("", where.Eq("status", "active"))}
+		mockPreload = MockPreload{assert: &Assert{}, argEntities: &Book{ID: 1}, argField: "users", argQuery: rel.Build("", where.Eq("status", "active"))}
 	)
 
 	assert.Equal(t, "Preload(ctx, &reltest.Book{ID: 1}, \"users\", rel.Where(where.Eq(\"status\", \"active\")))", mockPreload.String())

@@ -12,7 +12,7 @@ import (
 func TestIterate(t *testing.T) {
 	tests := []struct {
 		name   string
-		result interface{}
+		result any
 		count  int
 	}{
 		{

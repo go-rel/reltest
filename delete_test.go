@@ -184,7 +184,7 @@ func TestDelete_assert_transaction(t *testing.T) {
 
 func TestDelete_String(t *testing.T) {
 	var (
-		mockDelete = MockDelete{assert: &Assert{}, argRecord: &Book{}}
+		mockDelete = MockDelete{assert: &Assert{}, argEntity: &Book{}}
 	)
 
 	assert.Equal(t, "Delete(ctx, &reltest.Book{})", mockDelete.String())

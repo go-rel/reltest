@@ -12,7 +12,7 @@ func TestExec(t *testing.T) {
 	var (
 		repo      = New()
 		statement = "UPDATE users SET something = ? WHERE something2 = ?;"
-		args      = []interface{}{1, "2"}
+		args      = []any{1, "2"}
 	)
 
 	repo.ExpectExec(statement, args).Result(1, 2)
@@ -35,7 +35,7 @@ func TestExec_error(t *testing.T) {
 	var (
 		repo      = New()
 		statement = "UPDATE users SET something = ? WHERE something2 = ?;"
-		args      = []interface{}{1, "2"}
+		args      = []any{1, "2"}
 	)
 
 	repo.ExpectExec(statement, args).ConnectionClosed()
@@ -81,7 +81,7 @@ func TestExec_assert_transaction(t *testing.T) {
 
 func TestExec_String(t *testing.T) {
 	var (
-		mockExec = MockExec{assert: &Assert{}, argStatement: "UPDATE users SET something = ? WHERE something2 = ?;", argArgs: []interface{}{1, 2}}
+		mockExec = MockExec{assert: &Assert{}, argStatement: "UPDATE users SET something = ? WHERE something2 = ?;", argArgs: []any{1, 2}}
 	)
 
 	assert.Equal(t, "Exec(ctx, \"UPDATE users SET something = ? WHERE something2 = ?;\", 1, 2)", mockExec.String())

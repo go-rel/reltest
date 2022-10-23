@@ -69,7 +69,7 @@ func TestMutate_Insert_nested(t *testing.T) {
 	repo.AssertExpectations(t)
 }
 
-func TestMutate_Insert_record(t *testing.T) {
+func TestMutate_Insert_entity(t *testing.T) {
 	var (
 		repo   = New()
 		result = Book{Title: "Golang for dummies"}
@@ -235,7 +235,7 @@ func TestInsert_assert_transaction(t *testing.T) {
 
 func TestInsert_String(t *testing.T) {
 	var (
-		mockInsert = MockMutate{name: "Insert", assert: &Assert{}, argRecord: &Book{}, argMutators: []rel.Mutator{rel.Set("title", "go"), rel.Set("id", 1)}}
+		mockInsert = MockMutate{name: "Insert", assert: &Assert{}, argEntity: &Book{}, argMutators: []rel.Mutator{rel.Set("title", "go"), rel.Set("id", 1)}}
 	)
 
 	assert.Equal(t, "Insert(ctx, &reltest.Book{}, rel.Set(\"title\", \"go\"), rel.Set(\"id\", 1))", mockInsert.String())
@@ -341,7 +341,7 @@ func TestMutate_Update_nestedInsert(t *testing.T) {
 	repo.AssertExpectations(t)
 }
 
-func TestMutate_Update_record(t *testing.T) {
+func TestMutate_Update_entity(t *testing.T) {
 	var (
 		repo   = New()
 		result = Book{ID: 2, Title: "Golang for dummies"}
@@ -668,7 +668,7 @@ func TestUpdate_assert_transaction(t *testing.T) {
 
 func TestUpdate_String(t *testing.T) {
 	var (
-		mockUpdate = MockMutate{name: "Update", assert: &Assert{}, argRecord: &Book{}}
+		mockUpdate = MockMutate{name: "Update", assert: &Assert{}, argEntity: &Book{}}
 	)
 
 	assert.Equal(t, "Update(ctx, &reltest.Book{})", mockUpdate.String())

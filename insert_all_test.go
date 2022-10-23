@@ -109,7 +109,7 @@ func TestInsertAll_assert_transaction(t *testing.T) {
 
 func TestInsertAll_String(t *testing.T) {
 	var (
-		mockInsertAll = MockInsertAll{assert: &Assert{}, argRecord: &[]Book{}}
+		mockInsertAll = MockInsertAll{assert: &Assert{}, argEntity: &[]Book{}}
 	)
 
 	assert.Equal(t, "InsertAll(ctx, &[]reltest.Book{})", mockInsertAll.String())
