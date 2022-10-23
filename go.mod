@@ -3,7 +3,7 @@ module github.com/go-rel/reltest
 go 1.19
 
 require (
-	github.com/go-rel/rel v0.38.1-0.20221017143204-bfe77a0b79d6
+	github.com/go-rel/rel v0.39.0
 	github.com/stretchr/testify v1.8.0
 )
 
