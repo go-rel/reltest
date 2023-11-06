@@ -1,10 +1,12 @@
 module github.com/go-rel/reltest
 
-go 1.19
+go 1.21
+
+toolchain go1.21.1
 
 require (
-	github.com/go-rel/rel v0.39.0
-	github.com/stretchr/testify v1.8.3
+	github.com/go-rel/rel v0.41.0
+	github.com/stretchr/testify v1.8.4
 )
 
 require (

@@ -55,6 +55,15 @@ func TestRepository_Adapter(t *testing.T) {
 	assert.NotNil(t, repo.Adapter(ctx))
 }
 
+func TestRepository_AdapterName(t *testing.T) {
+	var (
+		ctx  = context.TODO()
+		repo = New()
+	)
+
+	assert.Equal(t, "nop", repo.Adapter(ctx).Name())
+}
+
 func TestRepository_Instrumentation(t *testing.T) {
 	assert.NotPanics(t, func() {
 		New().Instrumentation(rel.DefaultLogger)
@@ -121,9 +130,7 @@ func TestRepository_Transaction_error(t *testing.T) {
 }
 
 func TestRepository_Transaction_panic(t *testing.T) {
-	var (
-		repo = New()
-	)
+	repo := New()
 
 	repo.ExpectTransaction(func(repo *Repository) {
 	})
