@@ -241,3 +241,17 @@ func TestPreload_String(t *testing.T) {
 	assert.Equal(t, "Preload(ctx, &reltest.Book{ID: 1}, \"users\", rel.Where(where.Eq(\"status\", \"active\")))", mockPreload.String())
 	assert.Equal(t, "ExpectPreload(\"users\", rel.Where(where.Eq(\"status\", \"active\"))).ForType(\"*reltest.Book\")", mockPreload.ExpectString())
 }
+
+func TestPreload_invalidField(t *testing.T) {
+	var (
+		repo     = New()
+		authorID = 1
+		result   = Book{ID: 2, Title: "Rel for dummies", AuthorID: &authorID}
+		author   = Author{ID: 1, Name: "Kia"}
+	)
+
+	repo.ExpectPreload("xxx").Result(author)
+	assert.Panics(t, func() {
+		repo.MustPreload(context.TODO(), &result, "author")
+	})
+}
