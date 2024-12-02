@@ -27,6 +27,7 @@ func (p preload) execute(ctx context.Context, entities any, field string, querie
 		if (mp.argEntities == nil || reflect.DeepEqual(mp.argEntities, entities)) &&
 			(mp.argEntitiesType == "" || mp.argEntitiesType == reflect.TypeOf(entities).String()) &&
 			matchQuery(mp.argQuery, query) &&
+			mp.argField == field &&
 			mp.assert.call(ctx) {
 
 			if mp.result != nil {
